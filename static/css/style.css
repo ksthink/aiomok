@@ -1,4 +1,4 @@
-@import url('https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css');
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Changa+One:ital@0;1&family=Do+Hyeon&family=Jua&family=Song+Myung&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { height: 100%; }
@@ -24,7 +24,7 @@ html { height: 100%; }
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'D2Coding', 'D2 Coding', monospace;
+    font-family: 'Jua', sans-serif;
     min-height: 100%;
     min-height: 100dvh;
     display: flex;
@@ -56,6 +56,7 @@ body {
 }
 
 .game-title {
+    font-family: 'Black Han Sans', sans-serif;
     font-size: 18px;
     letter-spacing: 6px;
     font-weight: bold;
@@ -76,7 +77,7 @@ body {
 
 /* ── 버튼 공통 ── */
 button {
-    font-family: 'D2Coding', 'D2 Coding', monospace;
+    font-family: 'Jua', sans-serif;
     cursor: pointer;
     border: none;
     outline: none;
@@ -132,6 +133,47 @@ button {
 .turn-label { color: var(--text); font-weight: bold; }
 .move-label { color: var(--text-dim); }
 .replay-result { color: var(--text); font-weight: bold; }
+
+/* ── CPU 점유율 표시 ── */
+.cpu-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+.cpu-label.hidden {
+    display: none !important;
+}
+.cpu-label.fade-out {
+    opacity: 0;
+}
+.cpu-bar-track {
+    display: inline-block;
+    width: 36px;
+    height: 6px;
+    background: var(--border-light);
+    border-radius: 3px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.cpu-bar-fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    border-radius: 3px;
+    background: var(--text-muted);
+    transition: width 0.4s ease, background 0.4s ease;
+}
+.cpu-bar-fill.cpu-mid {
+    background: #b8860b;
+}
+.cpu-bar-fill.cpu-high {
+    background: #c53030;
+}
 
 /* ── 게임 보드 영역 ── */
 .game-board { display: flex; flex-direction: column; }
@@ -311,7 +353,7 @@ button {
 
 /* ── 뒤로 버튼 ── */
 .btn-back {
-    font-family: 'D2Coding', 'D2 Coding', monospace;
+    font-family: 'Jua', sans-serif;
     font-size: 14px;
     padding: 14px;
     background: var(--bg-surface);
@@ -376,7 +418,7 @@ button {
 }
 
 .btn-danger {
-    font-family: 'D2Coding', 'D2 Coding', monospace;
+    font-family: 'Jua', sans-serif;
     font-size: 13px;
     padding: 14px;
     background: var(--bg-surface);
@@ -414,4 +456,6 @@ button {
     .status-bar { font-size: 12px; }
     .stats-label { font-size: 13px; }
     .stats-value { font-size: 16px; }
+    .cpu-label { font-size: 10px; }
+    .cpu-bar-track { width: 28px; height: 5px; }
 }

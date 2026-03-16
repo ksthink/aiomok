@@ -171,19 +171,25 @@ function drawGhostStones(cx) {
         const px = PADDING + cand.x * CELL_SIZE;
         const py = PADDING + cand.y * CELL_SIZE;
         const isBest = ghostBest && ghostBest[0] === cand.x && ghostBest[1] === cand.y;
-        const r = STONE_RADIUS;
+        const r = STONE_RADIUS / 3;
+        const a = isBest ? 0.5 : 0.2;
 
         cx.beginPath();
         cx.arc(px, py, r, 0, Math.PI * 2);
-        cx.fillStyle = `rgba(240,240,240,${alpha})`;
-        cx.strokeStyle = `rgba(170,170,170,${alpha})`;
+        if (isBest) {
+            cx.fillStyle = `rgba(255,99,71,${a})`;
+            cx.strokeStyle = `rgba(255,69,50,0.6)`;
+        } else {
+            cx.fillStyle = `rgba(240,240,240,${a})`;
+            cx.strokeStyle = `rgba(170,170,170,${a})`;
+        }
         cx.fill();
-        cx.lineWidth = 1.5;
+        cx.lineWidth = 1;
         cx.stroke();
 
         if (cand.pct >= 1) {
-            const fontSize = Math.max(7, Math.round(CELL_SIZE * (isBest ? 0.38 : 0.3)));
-            cx.font = `bold ${fontSize}px 'D2Coding', monospace`;
+            const fontSize = Math.max(6, Math.round(CELL_SIZE * (isBest ? 0.25 : 0.2)));
+            cx.font = `bold ${fontSize}px 'Do Hyeon', sans-serif`;
             cx.textAlign = 'center';
             cx.textBaseline = 'middle';
 
@@ -204,7 +210,7 @@ function drawPvLine(cx, pvSteps, showNumber) {
      * pvSteps: [{x, y, color:'black'|'white'}, ...] or [[x,y,'b'|'w'], ...]
      * showNumber: true이면 순번 숫자 표시
      */
-    const alpha = 0.3;
+    const alpha = 0.2;
 
     pvSteps.forEach((step, idx) => {
         const sx = Array.isArray(step) ? step[0] : step.x;
@@ -214,7 +220,7 @@ function drawPvLine(cx, pvSteps, showNumber) {
 
         const px = PADDING + sx * CELL_SIZE;
         const py = PADDING + sy * CELL_SIZE;
-        const r = STONE_RADIUS;
+        const r = STONE_RADIUS / 3;
 
         cx.beginPath();
         cx.arc(px, py, r, 0, Math.PI * 2);
@@ -226,14 +232,14 @@ function drawPvLine(cx, pvSteps, showNumber) {
             cx.strokeStyle = `rgba(170,170,170,${alpha})`;
         }
         cx.fill();
-        cx.lineWidth = 1.5;
+        cx.lineWidth = 1;
         cx.stroke();
 
         if (showNumber) {
             // 순번 표시 (1부터 시작)
             const num = idx + 1;
-            const fontSize = Math.max(8, Math.round(CELL_SIZE * 0.35));
-            cx.font = `bold ${fontSize}px 'D2Coding', monospace`;
+            const fontSize = Math.max(6, Math.round(CELL_SIZE * 0.23));
+            cx.font = `bold ${fontSize}px 'Do Hyeon', sans-serif`;
             cx.textAlign = 'center';
             cx.textBaseline = 'middle';
             cx.fillStyle = isBlack ? `rgba(255,255,255,0.8)` : `rgba(0,0,0,0.8)`;
@@ -336,6 +342,8 @@ async function runAiMoveStream() {
     if (aiThinking || gameOver) return;
     aiThinking = true;
     document.getElementById('aiThinking').classList.remove('hidden');
+    const cpuLabel = document.getElementById('cpuLabel');
+    if (cpuLabel) cpuLabel.classList.remove('hidden');
     const turnLabel = document.getElementById('turnLabel');
     if (turnLabel) turnLabel.textContent = 'AI 생각 중';
 
@@ -385,6 +393,8 @@ async function runAiMoveStream() {
                         handleSSEEvent(evtType, data);
                         if (evtType === 'result') {
                             finalData = data;
+                        } else if (evtType === 'error') {
+                            finalData = { status: 'error', message: data.message || 'AI 오류' };
                         }
                     } catch (e) {
                         console.warn('SSE JSON parse error:', e);
@@ -418,8 +428,12 @@ async function runAiMoveStream() {
                     endGame(finalData.winner);
                 }
             } else {
-                showMessage('AI 오류', 'error');
+                const errMsg = finalData.message || 'AI 오류';
+                showMessage(errMsg, 'error');
             }
+        } else {
+            stopGhostAnimation();
+            showMessage('AI 응답 없음 — 다시 시도해주세요', 'error');
         }
     } catch (e) {
         console.error('SSE error:', e);
@@ -428,6 +442,15 @@ async function runAiMoveStream() {
     } finally {
         aiThinking = false;
         document.getElementById('aiThinking').classList.add('hidden');
+        const cpuLabelEl = document.getElementById('cpuLabel');
+        if (cpuLabelEl) cpuLabelEl.classList.add('hidden');
+        const cpuFill = document.getElementById('cpuBarFill');
+        if (cpuFill) {
+            cpuFill.style.width = '0%';
+            cpuFill.classList.remove('cpu-mid', 'cpu-high');
+        }
+        const cpuTxt = document.getElementById('cpuText');
+        if (cpuTxt) cpuTxt.textContent = '0%';
         stopGhostAnimation();
     }
 }
@@ -478,6 +501,21 @@ function handleSSEEvent(type, data) {
             ghostBest = data.move;
             lastPvLine = null;
         }
+    } else if (type === 'cpu') {
+        const pct = Math.round(data.cpu || 0);
+        const fill = document.getElementById('cpuBarFill');
+        const text = document.getElementById('cpuText');
+        if (fill) {
+            fill.style.width = pct + '%';
+            fill.classList.remove('cpu-mid', 'cpu-high');
+            if (pct >= 80) fill.classList.add('cpu-high');
+            else if (pct >= 50) fill.classList.add('cpu-mid');
+        }
+        if (text) text.textContent = pct + '%';
+    } else if (type === 'error') {
+        console.error('AI error event:', data.message);
+    } else if (type === 'timeout') {
+        console.warn('AI timeout event');
     }
 }
 

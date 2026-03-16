@@ -4,6 +4,7 @@ import os
 import json
 import queue
 import threading
+import psutil
 from game.omok import OmokBoard
 from game.ai import GomokuAI
 from game.rules import get_forbidden_type
@@ -14,15 +15,12 @@ app.secret_key = os.environ.get('SECRET_KEY', 'lord-gomoku-secret-key-2024')
 
 MAX_DIFFICULTY = 10
 
-AI_INSTANCE = None
+# Thread lock for AI computation — prevents concurrent board corruption
+_ai_lock = threading.Lock()
 
 def get_ai(difficulty=MAX_DIFFICULTY):
-    global AI_INSTANCE
-    if AI_INSTANCE is None:
-        AI_INSTANCE = GomokuAI(difficulty=difficulty)
-    else:
-        AI_INSTANCE.set_difficulty(difficulty)
-    return AI_INSTANCE
+    """Create a fresh AI instance per call (thread-safe, no shared state)."""
+    return GomokuAI(difficulty=difficulty)
 
 @app.route('/')
 def index():
@@ -35,7 +33,6 @@ def new_board():
     session['move_history'] = []
     session['ai_difficulty'] = MAX_DIFFICULTY
     session.modified = True
-    get_ai(MAX_DIFFICULTY)
     return jsonify({'status': 'ok', 'board': board.to_list()})
 
 @app.route('/api/move', methods=['POST'])
@@ -97,7 +94,17 @@ def ai_move():
     board = OmokBoard.from_dict(board_data)
     ai = get_ai(difficulty)
 
-    move = ai.generate_move(board)
+    # Deep copy the board for AI search (prevents cross-request corruption)
+    ai_board = OmokBoard.from_dict(board.to_dict())
+
+    acquired = _ai_lock.acquire(timeout=35)
+    if not acquired:
+        return jsonify({'status': 'error', 'message': 'AI가 다른 게임을 처리 중입니다. 잠시 후 다시 시도해주세요.'})
+    try:
+        move = ai.generate_move(ai_board)
+    finally:
+        _ai_lock.release()
+
     if move is None:
         return jsonify({'status': 'error', 'message': 'AI가 둘 자리가 없습니다.'})
 
@@ -128,27 +135,59 @@ def ai_move_stream():
         return jsonify({'status': 'error', 'message': '게임을 먼저 시작하세요.'})
 
     board = OmokBoard.from_dict(board_data)
+    # Deep copy for AI search — isolates from other concurrent requests
+    ai_board = OmokBoard.from_dict(board_data)
     ai = get_ai(difficulty)
 
     event_queue = queue.Queue()
     result_holder = [None]
+    ai_done = threading.Event()
+
+    # CPU usage monitor for current process
+    _process = psutil.Process(os.getpid())
+    _cpu_count = psutil.cpu_count() or 1
+    # Prime the cpu_percent measurement (first call always returns 0)
+    _process.cpu_percent()
 
     def progress_cb(event_type, data):
         event_queue.put((event_type, data))
 
+    def cpu_monitor():
+        """Periodically push CPU usage into event_queue while AI is running."""
+        while not ai_done.is_set():
+            try:
+                raw_pct = _process.cpu_percent(interval=0.5)
+                # Normalize to 0-100% range (psutil returns N*100% on N cores)
+                pct = min(100, round(raw_pct / _cpu_count))
+                event_queue.put(('cpu', {'cpu': pct}))
+            except Exception:
+                pass
+        # Final: AI done, send 0%
+        event_queue.put(('cpu', {'cpu': 0}))
+
     def run_ai():
+        acquired = _ai_lock.acquire(timeout=35)
+        if not acquired:
+            event_queue.put(('error', {'message': 'AI가 다른 게임을 처리 중입니다.'}))
+            ai_done.set()
+            event_queue.put(('_finished', None))
+            return
         try:
-            move = ai.generate_move_with_progress(board, progress_cb=progress_cb)
+            move = ai.generate_move_with_progress(ai_board, progress_cb=progress_cb)
             result_holder[0] = move
         except Exception as e:
             event_queue.put(('error', {'message': str(e)}))
         finally:
+            _ai_lock.release()
+            ai_done.set()
             event_queue.put(('_finished', None))
 
     sess_history = list(session.get('move_history', []))
 
     t = threading.Thread(target=run_ai, daemon=True)
+    cpu_t = threading.Thread(target=cpu_monitor, daemon=True)
     t.start()
+    cpu_t.start()
 
     def generate():
         while True:

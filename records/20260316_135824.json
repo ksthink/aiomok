@@ -1,8 +1,9 @@
 {
-  "id": "20260316_080321",
-  "timestamp": "03-16 08:03",
-  "winner": "white",
-  "difficulty": 5,
+  "id": "20260316_135824",
+  "timestamp": "2026-03-16 13:58",
+  "winner": "black",
+  "difficulty": 10,
+  "move_count": 15,
   "moves": [
     {
       "color": "black",
@@ -19,74 +20,80 @@
     {
       "color": "black",
       "move": 3,
-      "x": 9,
-      "y": 9
+      "x": 6,
+      "y": 6
     },
     {
       "color": "white",
       "move": 4,
-      "x": 8,
-      "y": 7
-    },
-    {
-      "color": "black",
-      "move": 5,
       "x": 7,
       "y": 6
     },
     {
       "color": "white",
-      "move": 6,
-      "x": 8,
-      "y": 6
-    },
-    {
-      "color": "black",
-      "move": 7,
+      "move": 5,
       "x": 8,
       "y": 9
     },
     {
       "color": "white",
-      "move": 8,
-      "x": 8,
+      "move": 6,
+      "x": 5,
       "y": 5
     },
     {
-      "color": "black",
+      "color": "white",
+      "move": 7,
+      "x": 6,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 8,
+      "x": 9,
+      "y": 9
+    },
+    {
+      "color": "white",
       "move": 9,
-      "x": 8,
-      "y": 4
+      "x": 11,
+      "y": 11
     },
     {
       "color": "white",
       "move": 10,
-      "x": 7,
-      "y": 5
+      "x": 4,
+      "y": 4
     },
     {
-      "color": "black",
+      "color": "white",
       "move": 11,
-      "x": 5,
-      "y": 3
+      "x": 8,
+      "y": 7
     },
     {
       "color": "white",
       "move": 12,
-      "x": 9,
+      "x": 10,
+      "y": 10
+    },
+    {
+      "color": "white",
+      "move": 13,
+      "x": 5,
       "y": 7
     },
     {
-      "color": "black",
-      "move": 13,
-      "x": 9,
-      "y": 6
+      "color": "white",
+      "move": 14,
+      "x": 3,
+      "y": 3
     },
     {
-      "x": 10,
-      "y": 8,
+      "x": 9,
+      "y": 7,
       "color": "white",
-      "move": 14
+      "move": 15
     }
   ]
 }

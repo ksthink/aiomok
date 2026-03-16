@@ -1,8 +1,9 @@
 {
-  "id": "20260316_081100",
-  "timestamp": "03-16 08:11",
-  "winner": "white",
-  "difficulty": 1,
+  "id": "20260316_121526",
+  "timestamp": "2026-03-16 12:15",
+  "winner": "black",
+  "difficulty": 10,
+  "move_count": 27,
   "moves": [
     {
       "color": "black",
@@ -19,182 +20,152 @@
     {
       "color": "black",
       "move": 3,
-      "x": 7,
-      "y": 8
+      "x": 9,
+      "y": 7
     },
     {
       "color": "white",
       "move": 4,
-      "x": 7,
-      "y": 9
+      "x": 8,
+      "y": 7
     },
     {
       "color": "black",
       "move": 5,
       "x": 8,
-      "y": 7
+      "y": 6
     },
     {
       "color": "white",
       "move": 6,
-      "x": 6,
-      "y": 7
-    },
-    {
-      "color": "black",
-      "move": 7,
-      "x": 10,
-      "y": 7
-    },
-    {
-      "color": "white",
-      "move": 8,
-      "x": 11,
-      "y": 7
-    },
-    {
-      "color": "black",
-      "move": 9,
-      "x": 12,
-      "y": 7
-    },
-    {
-      "color": "white",
-      "move": 10,
-      "x": 9,
-      "y": 6
-    },
-    {
-      "color": "black",
-      "move": 11,
-      "x": 11,
-      "y": 8
-    },
-    {
-      "color": "white",
-      "move": 12,
-      "x": 10,
-      "y": 6
-    },
-    {
-      "color": "black",
-      "move": 13,
       "x": 9,
       "y": 5
     },
     {
+      "color": "black",
+      "move": 7,
+      "x": 7,
+      "y": 5
+    },
+    {
       "color": "white",
-      "move": 14,
-      "x": 8,
-      "y": 6
+      "move": 8,
+      "x": 10,
+      "y": 8
     },
     {
       "color": "black",
-      "move": 15,
-      "x": 11,
+      "move": 9,
+      "x": 6,
       "y": 6
     },
     {
       "color": "white",
-      "move": 16,
+      "move": 10,
       "x": 7,
       "y": 6
     },
     {
       "color": "black",
+      "move": 11,
+      "x": 9,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 12,
+      "x": 9,
+      "y": 9
+    },
+    {
+      "color": "black",
+      "move": 13,
+      "x": 5,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 14,
+      "x": 4,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 15,
+      "x": 5,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 16,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "color": "black",
       "move": 17,
       "x": 6,
-      "y": 6
+      "y": 5
     },
     {
       "color": "white",
       "move": 18,
-      "x": 8,
+      "x": 4,
       "y": 5
     },
     {
       "color": "black",
       "move": 19,
-      "x": 9,
-      "y": 4
+      "x": 6,
+      "y": 8
     },
     {
       "color": "white",
       "move": 20,
-      "x": 10,
-      "y": 5
+      "x": 6,
+      "y": 7
     },
     {
       "color": "black",
       "move": 21,
-      "x": 10,
-      "y": 9
+      "x": 5,
+      "y": 3
     },
     {
       "color": "white",
       "move": 22,
-      "x": 5,
-      "y": 8
+      "x": 4,
+      "y": 4
     },
     {
       "color": "black",
       "move": 23,
-      "x": 4,
+      "x": 5,
       "y": 9
     },
     {
       "color": "white",
       "move": 24,
-      "x": 9,
-      "y": 8
+      "x": 4,
+      "y": 10
     },
     {
       "color": "black",
       "move": 25,
-      "x": 13,
+      "x": 5,
       "y": 6
     },
     {
       "color": "white",
       "move": 26,
-      "x": 14,
-      "y": 5
-    },
-    {
-      "color": "black",
-      "move": 27,
-      "x": 10,
+      "x": 5,
       "y": 4
     },
     {
-      "color": "white",
-      "move": 28,
-      "x": 8,
-      "y": 10
-    },
-    {
-      "color": "black",
-      "move": 29,
-      "x": 10,
-      "y": 10
-    },
-    {
-      "color": "white",
-      "move": 30,
-      "x": 6,
-      "y": 10
-    },
-    {
-      "color": "black",
-      "move": 31,
       "x": 5,
-      "y": 11
-    },
-    {
-      "x": 5,
-      "y": 10,
-      "color": "white",
-      "move": 32
+      "y": 8,
+      "color": "black",
+      "move": 27
     }
   ]
 }

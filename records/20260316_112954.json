@@ -1,8 +1,9 @@
 {
-  "id": "20260316_081941",
-  "timestamp": "03-16 08:19",
+  "id": "20260316_112954",
+  "timestamp": "2026-03-16 11:29",
   "winner": "white",
-  "difficulty": 5,
+  "difficulty": 10,
+  "move_count": 22,
   "moves": [
     {
       "color": "black",
@@ -19,86 +20,122 @@
     {
       "color": "black",
       "move": 3,
-      "x": 9,
-      "y": 8
-    },
-    {
-      "color": "white",
-      "move": 4,
-      "x": 9,
-      "y": 7
-    },
-    {
-      "color": "black",
-      "move": 5,
-      "x": 10,
+      "x": 8,
       "y": 6
     },
     {
       "color": "white",
+      "move": 4,
+      "x": 6,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 5,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "color": "white",
       "move": 6,
-      "x": 8,
-      "y": 9
+      "x": 7,
+      "y": 8
     },
     {
       "color": "black",
       "move": 7,
       "x": 9,
-      "y": 9
+      "y": 8
     },
     {
       "color": "white",
       "move": 8,
-      "x": 8,
-      "y": 7
+      "x": 9,
+      "y": 6
     },
     {
       "color": "black",
       "move": 9,
       "x": 8,
-      "y": 6
+      "y": 7
     },
     {
       "color": "white",
       "move": 10,
-      "x": 8,
-      "y": 10
+      "x": 10,
+      "y": 4
     },
     {
       "color": "black",
       "move": 11,
-      "x": 8,
-      "y": 11
+      "x": 7,
+      "y": 6
     },
     {
       "color": "white",
       "move": 12,
       "x": 10,
-      "y": 7
+      "y": 9
     },
     {
       "color": "black",
       "move": 13,
-      "x": 11,
-      "y": 7
+      "x": 6,
+      "y": 5
     },
     {
       "color": "white",
       "move": 14,
-      "x": 10,
-      "y": 10
+      "x": 5,
+      "y": 4
     },
     {
       "color": "black",
       "move": 15,
+      "x": 6,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 16,
+      "x": 5,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 17,
+      "x": 9,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 18,
       "x": 10,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 19,
+      "x": 8,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 20,
+      "x": 5,
       "y": 8
     },
     {
-      "x": 9,
-      "y": 11,
+      "color": "black",
+      "move": 21,
+      "x": 7,
+      "y": 5
+    },
+    {
+      "x": 4,
+      "y": 8,
       "color": "white",
-      "move": 16
+      "move": 22
     }
   ]
 }

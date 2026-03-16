@@ -1,9 +1,9 @@
 {
-  "id": "20260316_091436",
-  "timestamp": "2026-03-16 09:14",
+  "id": "20260316_120833",
+  "timestamp": "2026-03-16 12:08",
   "winner": "white",
   "difficulty": 10,
-  "move_count": 12,
+  "move_count": 18,
   "moves": [
     {
       "color": "black",
@@ -20,62 +20,98 @@
     {
       "color": "black",
       "move": 3,
-      "x": 8,
+      "x": 9,
       "y": 7
     },
     {
       "color": "white",
       "move": 4,
-      "x": 9,
+      "x": 8,
       "y": 7
     },
     {
       "color": "black",
       "move": 5,
-      "x": 10,
+      "x": 8,
       "y": 6
     },
     {
       "color": "white",
       "move": 6,
       "x": 9,
-      "y": 8
+      "y": 5
     },
     {
       "color": "black",
       "move": 7,
       "x": 7,
-      "y": 8
-    },
-    {
-      "color": "white",
-      "move": 8,
-      "x": 9,
-      "y": 6
-    },
-    {
-      "color": "black",
-      "move": 9,
-      "x": 9,
       "y": 5
     },
     {
       "color": "white",
+      "move": 8,
+      "x": 10,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 9,
+      "x": 6,
+      "y": 6
+    },
+    {
+      "color": "white",
       "move": 10,
-      "x": 9,
-      "y": 9
+      "x": 7,
+      "y": 6
     },
     {
       "color": "black",
       "move": 11,
-      "x": 8,
-      "y": 6
+      "x": 5,
+      "y": 5
     },
     {
-      "x": 9,
-      "y": 10,
       "color": "white",
-      "move": 12
+      "move": 12,
+      "x": 9,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 13,
+      "x": 4,
+      "y": 4
+    },
+    {
+      "color": "white",
+      "move": 14,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "color": "black",
+      "move": 15,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 16,
+      "x": 11,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 17,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "x": 12,
+      "y": 8,
+      "color": "white",
+      "move": 18
     }
   ]
 }
