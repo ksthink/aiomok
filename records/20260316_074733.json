@@ -1,0 +1,44 @@
+{
+  "id": "20260316_074733",
+  "timestamp": "03-16 07:47",
+  "winner": "white",
+  "difficulty": 10,
+  "moves": [
+    {
+      "color": "black",
+      "move": 1,
+      "x": 7,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 2,
+      "x": 8,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 3,
+      "x": 8,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 4,
+      "x": 9,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 5,
+      "x": 7,
+      "y": 9
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "white",
+      "move": 6
+    }
+  ]
+}

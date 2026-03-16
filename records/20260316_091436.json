@@ -1,0 +1,81 @@
+{
+  "id": "20260316_091436",
+  "timestamp": "2026-03-16 09:14",
+  "winner": "white",
+  "difficulty": 10,
+  "move_count": 12,
+  "moves": [
+    {
+      "color": "black",
+      "move": 1,
+      "x": 7,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 2,
+      "x": 8,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 3,
+      "x": 8,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 4,
+      "x": 9,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 5,
+      "x": 10,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 6,
+      "x": 9,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 7,
+      "x": 7,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 8,
+      "x": 9,
+      "y": 6
+    },
+    {
+      "color": "black",
+      "move": 9,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 10,
+      "x": 9,
+      "y": 9
+    },
+    {
+      "color": "black",
+      "move": 11,
+      "x": 8,
+      "y": 6
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "color": "white",
+      "move": 12
+    }
+  ]
+}

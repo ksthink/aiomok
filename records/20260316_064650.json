@@ -1,0 +1,230 @@
+{
+  "id": "20260316_064650",
+  "timestamp": "03-16 06:46",
+  "winner": "black",
+  "difficulty": 10,
+  "moves": [
+    {
+      "color": "black",
+      "move": 1,
+      "x": 7,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 2,
+      "x": 6,
+      "y": 6
+    },
+    {
+      "color": "black",
+      "move": 3,
+      "x": 7,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 4,
+      "x": 5,
+      "y": 10
+    },
+    {
+      "color": "black",
+      "move": 5,
+      "x": 6,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 6,
+      "x": 8,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 7,
+      "x": 8,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 8,
+      "x": 9,
+      "y": 4
+    },
+    {
+      "color": "black",
+      "move": 9,
+      "x": 5,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 10,
+      "x": 4,
+      "y": 9
+    },
+    {
+      "color": "black",
+      "move": 11,
+      "x": 7,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 12,
+      "x": 7,
+      "y": 9
+    },
+    {
+      "color": "black",
+      "move": 13,
+      "x": 7,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 14,
+      "x": 7,
+      "y": 4
+    },
+    {
+      "color": "black",
+      "move": 15,
+      "x": 9,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 16,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "color": "black",
+      "move": 17,
+      "x": 10,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 18,
+      "x": 11,
+      "y": 5
+    },
+    {
+      "color": "black",
+      "move": 19,
+      "x": 9,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 20,
+      "x": 3,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 21,
+      "x": 6,
+      "y": 11
+    },
+    {
+      "color": "white",
+      "move": 22,
+      "x": 9,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 23,
+      "x": 10,
+      "y": 9
+    },
+    {
+      "color": "white",
+      "move": 24,
+      "x": 4,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 25,
+      "x": 4,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 26,
+      "x": 5,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 27,
+      "x": 6,
+      "y": 9
+    },
+    {
+      "color": "white",
+      "move": 28,
+      "x": 7,
+      "y": 10
+    },
+    {
+      "color": "black",
+      "move": 29,
+      "x": 3,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 30,
+      "x": 2,
+      "y": 5
+    },
+    {
+      "color": "black",
+      "move": 31,
+      "x": 11,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 32,
+      "x": 10,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 33,
+      "x": 12,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 34,
+      "x": 9,
+      "y": 10
+    },
+    {
+      "color": "black",
+      "move": 35,
+      "x": 13,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 36,
+      "x": 13,
+      "y": 7
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "color": "black",
+      "move": 37
+    }
+  ]
+}

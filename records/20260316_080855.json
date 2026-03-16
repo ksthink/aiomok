@@ -1,0 +1,140 @@
+{
+  "id": "20260316_080855",
+  "timestamp": "03-16 08:08",
+  "winner": "white",
+  "difficulty": 10,
+  "moves": [
+    {
+      "color": "black",
+      "move": 1,
+      "x": 7,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 2,
+      "x": 8,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 3,
+      "x": 9,
+      "y": 9
+    },
+    {
+      "color": "white",
+      "move": 4,
+      "x": 9,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 5,
+      "x": 7,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 6,
+      "x": 8,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 7,
+      "x": 8,
+      "y": 10
+    },
+    {
+      "color": "white",
+      "move": 8,
+      "x": 8,
+      "y": 6
+    },
+    {
+      "color": "black",
+      "move": 9,
+      "x": 8,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 10,
+      "x": 7,
+      "y": 6
+    },
+    {
+      "color": "black",
+      "move": 11,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "color": "white",
+      "move": 12,
+      "x": 10,
+      "y": 9
+    },
+    {
+      "color": "black",
+      "move": 13,
+      "x": 11,
+      "y": 10
+    },
+    {
+      "color": "white",
+      "move": 14,
+      "x": 7,
+      "y": 10
+    },
+    {
+      "color": "black",
+      "move": 15,
+      "x": 6,
+      "y": 11
+    },
+    {
+      "color": "white",
+      "move": 16,
+      "x": 10,
+      "y": 7
+    },
+    {
+      "color": "black",
+      "move": 17,
+      "x": 11,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 18,
+      "x": 10,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 19,
+      "x": 10,
+      "y": 10
+    },
+    {
+      "color": "white",
+      "move": 20,
+      "x": 9,
+      "y": 11
+    },
+    {
+      "color": "black",
+      "move": 21,
+      "x": 7,
+      "y": 11
+    },
+    {
+      "x": 12,
+      "y": 11,
+      "color": "white",
+      "move": 22
+    }
+  ]
+}

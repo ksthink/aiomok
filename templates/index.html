@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주군의 한판</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1 class="game-title">주군의 한판</h1>
+        </header>
+
+        <main class="game-main">
+
+            <!-- 메인 메뉴 -->
+            <nav class="menu-section" id="mainMenu">
+                <div class="menu-buttons">
+                    <button class="btn-menu" id="btnStartGame">게임시작</button>
+                    <button class="btn-menu" id="btnReplay">기보복기</button>
+                    <button class="btn-menu" id="btnStats">전적확인</button>
+                </div>
+            </nav>
+
+            <!-- 게임 보드 -->
+            <section class="game-board hidden" id="gameBoard">
+                <div class="status-bar">
+                    <span class="turn-label" id="turnLabel">흑 차례</span>
+                    <span class="move-label"><span id="moveCount">0</span>수</span>
+                </div>
+                <div class="board-wrapper">
+                    <canvas id="board"></canvas>
+                </div>
+                <div class="game-controls">
+                    <button class="btn-control" id="newGameBtn">새 게임</button>
+                    <button class="btn-control" id="menuBtn">메뉴</button>
+                </div>
+                <div class="game-message" id="gameMessage"></div>
+            </section>
+
+            <!-- 기보 목록 -->
+            <section class="replay-select hidden" id="replaySelect">
+                <h2 class="section-title">기보복기</h2>
+                <div class="record-list" id="recordList"></div>
+                <button class="btn-back" id="backFromReplay">뒤로</button>
+            </section>
+
+            <!-- 기보 재생 -->
+            <section class="replay-view hidden" id="replayView">
+                <div class="status-bar">
+                    <span class="replay-result" id="replayMessage"></span>
+                    <span class="move-label"><span id="replayMoveNum">0</span> / <span id="replayTotalMoves">0</span></span>
+                </div>
+                <div class="board-wrapper">
+                    <canvas id="replayBoard"></canvas>
+                </div>
+                <div class="replay-controls">
+                    <button class="btn-replay" id="replayFirst">처음</button>
+                    <button class="btn-replay" id="prevMove">이전</button>
+                    <button class="btn-replay btn-replay-play" id="replayAutoPlay">재생</button>
+                    <button class="btn-replay" id="nextMove">다음</button>
+                    <button class="btn-replay" id="replayLast">끝</button>
+                </div>
+                <button class="btn-back" id="backToReplayList">기보 목록</button>
+            </section>
+
+            <!-- 전적 확인 -->
+            <section class="stats-section hidden" id="statsView">
+                <h2 class="section-title">전적확인</h2>
+                <div class="stats-card">
+                    <div class="stats-row">
+                        <span class="stats-label">총 게임</span>
+                        <span class="stats-value" id="statTotal">0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">승리</span>
+                        <span class="stats-value stats-win" id="statWins">0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">패배</span>
+                        <span class="stats-value stats-loss" id="statLosses">0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">무승부</span>
+                        <span class="stats-value" id="statDraws">0</span>
+                    </div>
+                    <div class="stats-row stats-row-highlight">
+                        <span class="stats-label">승률</span>
+                        <span class="stats-value" id="statWinRate">0%</span>
+                    </div>
+                </div>
+                <div class="stats-actions">
+                    <button class="btn-danger" id="btnClearRecords">전적 초기화</button>
+                </div>
+                <button class="btn-back" id="backFromStats">뒤로</button>
+            </section>
+
+        </main>
+
+        <div class="ai-thinking hidden" id="aiThinking">AI 생각 중...</div>
+    </div>
+
+    <script src="/static/js/game.js?v=21"></script>
+</body>
+</html>
