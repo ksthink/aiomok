@@ -29,7 +29,6 @@ import math
 import random
 import logging
 import os
-import numpy as np
 from multiprocessing import Process, Value, Array
 import ctypes
 
@@ -377,147 +376,108 @@ def _get_candidates(board, radius=2):
 # ──────────────────────────────────────────────
 
 class _IncrementalEval:
-    """Maintains board evaluation incrementally.
+    """Maintains board evaluation incrementally using per-cell cached scores.
     
-    Instead of scanning all 225 cells on every _evaluate() call,
-    tracks a running score and updates only the affected lines
-    when a stone is placed or removed.
+    Instead of the prepare/place double-computation pattern, maintains a
+    cell_score[y][x] array. On update, only re-scores affected cells along
+    the 4 directions (radius 4), subtracts old cached scores and adds new ones.
     """
     
     def __init__(self, board, ai_stone, human_stone):
         self.ai = ai_stone
         self.human = human_stone
-        self._score = self._full_evaluate(board)
+        self._score = 0.0
+        # Per-cell cached score contribution: cell_score[y][x] = net contribution
+        self._cell_score = [[0.0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+        self._build(board)
     
-    def _full_evaluate(self, board):
-        """Full board evaluation (used once at init)."""
-        ai_score = 0
-        human_score = 0
+    def _cell_eval(self, board, x, y):
+        """Compute net score contribution of a single cell (x,y)."""
+        stone = board[y][x]
+        if stone == 0:
+            return 0.0
+        
         center = BOARD_SIZE // 2
+        dist = abs(x - center) + abs(y - center)
+        pos_bonus = max(0, BOARD_SIZE - dist)
         
-        for y in range(BOARD_SIZE):
-            row = board[y]
-            for x in range(BOARD_SIZE):
-                stone = row[x]
-                if stone == 0:
-                    continue
-                dist = abs(x - center) + abs(y - center)
-                pos_bonus = max(0, (BOARD_SIZE - dist))
-                
-                threat_counts = {'four': 0, 'open_three': 0}
-                for dx, dy in DIRECTIONS:
-                    px, py = x - dx, y - dy
-                    if 0 <= px < BOARD_SIZE and 0 <= py < BOARD_SIZE and board[py][px] == stone:
-                        continue
-                    c, o = _line_info(board, x, y, dx, dy, stone)
-                    s = _SCORE_TABLE.get((c, o), FIVE if c >= 5 else 0)
-                    if stone == self.ai:
-                        ai_score += s
-                    else:
-                        human_score += s
-                    if c == 4 and o >= 1:
-                        threat_counts['four'] += 1
-                    elif c == 3 and o == 2:
-                        threat_counts['open_three'] += 1
-                
-                combo_bonus = _multi_threat_bonus(threat_counts)
-                if stone == self.ai:
-                    ai_score += combo_bonus + pos_bonus
-                else:
-                    human_score += combo_bonus + pos_bonus
+        line_score = 0
+        threat_four = 0
+        threat_open_three = 0
+        BS = BOARD_SIZE
+        _st = _SCORE_TABLE
         
-        # Gap patterns
-        for y in range(BOARD_SIZE):
-            for x in range(BOARD_SIZE):
-                if board[y][x] != 0:
-                    continue
-                has_neighbor = False
-                for dx, dy in DIRECTIONS:
-                    for sign in (1, -1):
-                        nx, ny = x + dx * sign, y + dy * sign
-                        if 0 <= nx < BOARD_SIZE and 0 <= ny < BOARD_SIZE and board[ny][nx] != 0:
-                            has_neighbor = True
-                            break
-                    if has_neighbor:
-                        break
-                if not has_neighbor:
-                    continue
-                ai_score += _gap_pattern_score(board, x, y, self.ai)
-                human_score += _gap_pattern_score(board, x, y, self.human)
+        for dx, dy in DIRECTIONS:
+            # Skip if not the start of a line (avoid double counting)
+            px, py = x - dx, y - dy
+            if 0 <= px < BS and 0 <= py < BS and board[py][px] == stone:
+                continue
+            # Inline _line_info for speed
+            c1, nx, ny = 0, x + dx, y + dy
+            while 0 <= nx < BS and 0 <= ny < BS and board[ny][nx] == stone:
+                c1 += 1; nx += dx; ny += dy
+            c2, nx2, ny2 = 0, x - dx, y - dy
+            while 0 <= nx2 < BS and 0 <= ny2 < BS and board[ny2][nx2] == stone:
+                c2 += 1; nx2 -= dx; ny2 -= dy
+            count = 1 + c1 + c2
+            # Check ends
+            ex1, ey1 = x + dx * (c1 + 1), y + dy * (c1 + 1)
+            ex2, ey2 = x - dx * (c2 + 1), y - dy * (c2 + 1)
+            open_ends = 0
+            if 0 <= ex1 < BS and 0 <= ey1 < BS and board[ey1][ex1] == 0:
+                open_ends += 1
+            if 0 <= ex2 < BS and 0 <= ey2 < BS and board[ey2][ex2] == 0:
+                open_ends += 1
+            s = _st.get((count, open_ends), FIVE if count >= 5 else 0)
+            line_score += s
+            if count == 4 and open_ends >= 1:
+                threat_four += 1
+            elif count == 3 and open_ends == 2:
+                threat_open_three += 1
         
-        return ai_score - human_score * 1.35
+        combo = 0
+        if threat_four >= 2:
+            combo = OPEN_FOUR * 2
+        elif threat_four >= 1 and threat_open_three >= 1:
+            combo = OPEN_FOUR
+        elif threat_open_three >= 2:
+            combo = FOUR * 2
+        
+        total = line_score + combo + pos_bonus
+        if stone == self.ai:
+            return total
+        else:
+            return -total * 1.35
     
-    def _delta_score(self, board, x, y):
-        """Compute score contribution of cells affected by position (x,y).
-        
-        Scans stones within radius 4 of (x,y) along directions.
-        Skips gap patterns for speed — line patterns are sufficient
-        for delta eval in search.
-        """
-        ai_score = 0
-        human_score = 0
-        center = BOARD_SIZE // 2
-        
-        # Affected area: positions within 4 cells in any direction
-        affected = set()
+    def _build(self, board):
+        """Full build of per-cell scores (called once at init)."""
+        total = 0.0
+        for y in range(BOARD_SIZE):
+            for x in range(BOARD_SIZE):
+                cs = self._cell_eval(board, x, y)
+                self._cell_score[y][x] = cs
+                total += cs
+        self._score = total
+    
+    def _affected_cells(self, x, y):
+        """Yield cells affected by a change at (x,y) — along 4 directions, radius 4."""
+        BS = BOARD_SIZE
+        seen = set()
         for dx, dy in DIRECTIONS:
             for dist in range(-4, 5):
                 nx, ny = x + dx * dist, y + dy * dist
-                if 0 <= nx < BOARD_SIZE and 0 <= ny < BOARD_SIZE:
-                    affected.add((nx, ny))
-        
-        for ax, ay in affected:
-            stone = board[ay][ax]
-            if stone == 0:
-                continue
-            
-            dist_c = abs(ax - center) + abs(ay - center)
-            pos_bonus = max(0, (BOARD_SIZE - dist_c))
-            
-            threat_counts = {'four': 0, 'open_three': 0}
-            for dx, dy in DIRECTIONS:
-                px, py = ax - dx, ay - dy
-                if 0 <= px < BOARD_SIZE and 0 <= py < BOARD_SIZE and board[py][px] == stone:
-                    continue
-                c, o = _line_info(board, ax, ay, dx, dy, stone)
-                s = _SCORE_TABLE.get((c, o), FIVE if c >= 5 else 0)
-                if stone == self.ai:
-                    ai_score += s
-                else:
-                    human_score += s
-                if c == 4 and o >= 1:
-                    threat_counts['four'] += 1
-                elif c == 3 and o == 2:
-                    threat_counts['open_three'] += 1
-            
-            combo_bonus = _multi_threat_bonus(threat_counts)
-            if stone == self.ai:
-                ai_score += combo_bonus + pos_bonus
-            else:
-                human_score += combo_bonus + pos_bonus
-        
-        return ai_score - human_score * 1.35
+                if 0 <= nx < BS and 0 <= ny < BS and (nx, ny) not in seen:
+                    seen.add((nx, ny))
+                    yield nx, ny
     
-    def place(self, board, x, y, stone):
-        """Update score after placing stone. Call AFTER board[y][x] = stone."""
-        # Remove old delta, add new delta
-        old_delta = self._delta_before
-        new_delta = self._delta_score(board, x, y)
-        self._score += (new_delta - old_delta)
-    
-    def prepare_place(self, board, x, y):
-        """Call BEFORE placing stone to capture the 'before' state."""
-        self._delta_before = self._delta_score(board, x, y)
-    
-    def prepare_remove(self, board, x, y):
-        """Call BEFORE removing stone to capture the 'before' state."""
-        self._delta_before = self._delta_score(board, x, y)
-    
-    def remove(self, board, x, y):
-        """Update score after removing stone. Call AFTER board[y][x] = 0."""
-        old_delta = self._delta_before
-        new_delta = self._delta_score(board, x, y)
-        self._score += (new_delta - old_delta)
+    def update(self, board, x, y):
+        """Re-score all cells affected by a change at (x,y).
+        Call AFTER the board has been modified."""
+        for ax, ay in self._affected_cells(x, y):
+            old = self._cell_score[ay][ax]
+            new = self._cell_eval(board, ax, ay)
+            self._cell_score[ay][ax] = new
+            self._score += (new - old)
     
     def get_score(self, stone):
         """Get score from perspective of `stone`."""
@@ -528,7 +488,7 @@ class _IncrementalEval:
     
     def recalc(self, board):
         """Force full recalculation (for safety/debugging)."""
-        self._score = self._full_evaluate(board)
+        self._build(board)
 
 
 def _fast_sorted_candidates(board, stone, opponent, max_moves=12):
@@ -834,97 +794,6 @@ def _evaluate(board, ai_stone, human_stone):
 
 
 # ──────────────────────────────────────────────
-# NumPy-accelerated evaluation
-# ──────────────────────────────────────────────
-
-def _evaluate_np(board, ai_stone, human_stone):
-    """NumPy-accelerated board evaluation.
-    
-    Uses vectorized operations for position bonus and basic pattern counting,
-    with Python fallback for complex pattern logic.
-    """
-    arr = np.array(board, dtype=np.int8)
-    
-    ai_score = 0
-    human_score = 0
-    center = BOARD_SIZE // 2
-    
-    # Vectorized position bonus
-    ys, xs = np.where(arr != 0)
-    if len(ys) > 0:
-        dists = np.abs(xs - center) + np.abs(ys - center)
-        pos_bonuses = np.maximum(0, BOARD_SIZE - dists)
-        ai_mask = arr[ys, xs] == ai_stone
-        ai_score += int(np.sum(pos_bonuses[ai_mask]))
-        human_score += int(np.sum(pos_bonuses[~ai_mask]))
-    
-    # Line pattern scoring (still needs Python for directional analysis)
-    _st = _SCORE_TABLE
-    for y in range(BOARD_SIZE):
-        row = board[y]
-        for x in range(BOARD_SIZE):
-            stone = row[x]
-            if stone == 0:
-                continue
-            
-            threat_counts_four = 0
-            threat_counts_open_three = 0
-            for dx, dy in DIRECTIONS:
-                px, py = x - dx, y - dy
-                if 0 <= px < BOARD_SIZE and 0 <= py < BOARD_SIZE and board[py][px] == stone:
-                    continue
-                c, o = _line_info(board, x, y, dx, dy, stone)
-                s = _st.get((c, o), FIVE if c >= 5 else 0)
-                if stone == ai_stone:
-                    ai_score += s
-                else:
-                    human_score += s
-                if c == 4 and o >= 1:
-                    threat_counts_four += 1
-                elif c == 3 and o == 2:
-                    threat_counts_open_three += 1
-            
-            combo_bonus = 0
-            if threat_counts_four >= 2:
-                combo_bonus = OPEN_FOUR * 2
-            elif threat_counts_four >= 1 and threat_counts_open_three >= 1:
-                combo_bonus = OPEN_FOUR
-            elif threat_counts_open_three >= 2:
-                combo_bonus = FOUR * 2
-            
-            if stone == ai_stone:
-                ai_score += combo_bonus
-            else:
-                human_score += combo_bonus
-    
-    # Gap patterns for empty cells near stones (use numpy for neighbor detection)
-    empty_mask = (arr == 0)
-    has_neighbor_mask = np.zeros((BOARD_SIZE, BOARD_SIZE), dtype=bool)
-    for dx, dy in DIRECTIONS:
-        for sign in (1, -1):
-            shifted = np.roll(np.roll(arr, -dy * sign, axis=0), -dx * sign, axis=1)
-            # Mask out wrapped edges
-            edge_mask = np.ones((BOARD_SIZE, BOARD_SIZE), dtype=bool)
-            if dy * sign > 0:
-                edge_mask[-1, :] = False
-            elif dy * sign < 0:
-                edge_mask[0, :] = False
-            if dx * sign > 0:
-                edge_mask[:, -1] = False
-            elif dx * sign < 0:
-                edge_mask[:, 0] = False
-            has_neighbor_mask |= (empty_mask & edge_mask & (shifted != 0))
-    
-    gap_ys, gap_xs = np.where(has_neighbor_mask)
-    for i in range(len(gap_ys)):
-        gy, gx = int(gap_ys[i]), int(gap_xs[i])
-        ai_score += _gap_pattern_score(board, gx, gy, ai_stone)
-        human_score += _gap_pattern_score(board, gx, gy, human_stone)
-    
-    return ai_score - human_score * 1.35
-
-
-# ──────────────────────────────────────────────
 # Alpha-Beta Search with NMP + LMR + PVS + TT + Killer + History
 # ──────────────────────────────────────────────
 
@@ -944,7 +813,8 @@ LMR_FULL_MOVES = 4   # First N moves are searched at full depth
 
 class _ABSearch:
     def __init__(self, ai_stone, human_stone, max_time, progress_cb=None,
-                 use_incremental=True, use_nmp=True, use_lmr=True):
+                 use_incremental=True, use_nmp=True, use_lmr=True,
+                 shared_tt=None):
         self.ai = ai_stone
         self.human = human_stone
         self.max_time = max_time
@@ -961,9 +831,12 @@ class _ABSearch:
         self.use_incremental = use_incremental
 
         # Transposition table with depth-preferred replacement
-        # Entry: zobrist_hash -> (depth, score, flag, best_move)
-        self.tt = {}
-        self.tt_max_size = 2000000  # 2M entries (~160MB)
+        # Shared across moves for persistence; fixed-size array indexed by hash
+        if shared_tt is not None:
+            self.tt = shared_tt
+        else:
+            self.tt = {}
+        self.tt_max_size = 2000000  # 2M entries
 
         # Killer moves: ply -> [move1, move2]
         self.killers = {}
@@ -995,7 +868,7 @@ class _ABSearch:
         self.timeout = False
         self.root_scores = {}
         self.killers = {}
-        self.history = {}
+        # history is NOT reset — persisted from previous moves (decayed externally)
         self.counter_moves = {}
         
         self.zhash = _zobrist_hash(board)
@@ -1030,25 +903,41 @@ class _ABSearch:
             
             depth_start = time.time()
             
-            # Aspiration window: use previous iteration's score to narrow search
+            # Aspiration window: graduated widening on fail-low/fail-high
             if d >= 4 and best_move is not None:
                 delta = 50
                 asp_alpha = prev_score - delta
                 asp_beta = prev_score + delta
                 
-                m, s = self._root(board, d, asp_alpha, asp_beta)
-                
-                if not self.timeout and m is not None:
-                    # Check if score fell outside window
-                    if s <= asp_alpha or s >= asp_beta:
-                        # Re-search with full window
+                while not self.timeout:
+                    m, s = self._root(board, d, asp_alpha, asp_beta)
+                    
+                    if self.timeout or m is None:
+                        break
+                    
+                    if s <= asp_alpha:
+                        # Fail-low: widen alpha side
+                        delta *= 4
+                        asp_alpha = max(prev_score - delta, -FIVE - 1)
+                    elif s >= asp_beta:
+                        # Fail-high: widen beta side
+                        delta *= 4
+                        asp_beta = min(prev_score + delta, FIVE + 1)
+                    else:
+                        # Score within window — accept
+                        best_move = m
+                        best_score = s
+                        prev_score = s
+                        break
+                    
+                    # Safety: if delta is huge, do full-width search
+                    if delta > 10000:
                         m2, s2 = self._root(board, d, -math.inf, math.inf)
                         if not self.timeout and m2 is not None:
-                            m, s = m2, s2
-                    
-                    best_move = m
-                    best_score = s
-                    prev_score = s
+                            best_move = m2
+                            best_score = s2
+                            prev_score = s2
+                        break
             else:
                 m, s = self._root(board, d, -math.inf, math.inf)
                 if not self.timeout and m is not None:
@@ -1140,8 +1029,10 @@ class _ABSearch:
             return
         self.progress_cb(dict(self.root_scores), current_move)
 
-    def _order_moves(self, board, cands, stone, opp, ply, prev_move=None):
-        """Order moves using TT best move, killer moves, counter moves, and history."""
+    def _order_moves(self, board, cands, stone, opp, ply, prev_move=None,
+                     tactical_scores=None):
+        """Order moves using TT best move, killer moves, counter moves, history,
+        and tactical scores from _score_cands_fast()."""
         tt_move = None
         tt_entry = self.tt.get(self.zhash)
         if tt_entry and tt_entry[3]:
@@ -1150,6 +1041,7 @@ class _ABSearch:
         killers = self.killers.get(ply, [])
         counter = self.counter_moves.get(prev_move) if prev_move else None
         hist = self.history
+        tac = tactical_scores if tactical_scores else {}
         
         def move_priority(move):
             score = 0
@@ -1160,6 +1052,8 @@ class _ABSearch:
             if counter and move == counter:
                 score += 500000
             score += hist.get(move, 0)
+            # Incorporate tactical score (scaled down to not dominate TT/killer)
+            score += tac.get(move, 0) * 0.1
             return score
 
         cands.sort(key=move_priority, reverse=True)
@@ -1206,16 +1100,13 @@ class _ABSearch:
             if self._check():
                 break
             
-            # Incremental update
-            if self.use_incremental and self.incr_eval:
-                self.incr_eval.prepare_place(board, x, y)
-            
+            # Place stone + incremental updates
             board[y][x] = self.ai
             self.zhash = _zobrist_update(self.zhash, x, y, 0, self.ai)
             if self.use_incremental and self.cand_set:
                 self.cand_set.place(board, x, y)
             if self.use_incremental and self.incr_eval:
-                self.incr_eval.place(board, x, y, self.ai)
+                self.incr_eval.update(board, x, y)
             
             # PVS: first move full window, rest with null window then re-search
             if i == 0:
@@ -1231,14 +1122,12 @@ class _ABSearch:
                                   self.human, self.ai, 1, (x, y))
             
             # Undo
-            if self.use_incremental and self.incr_eval:
-                self.incr_eval.prepare_remove(board, x, y)
             board[y][x] = 0
             self.zhash = _zobrist_update(self.zhash, x, y, self.ai, 0)
             if self.use_incremental and self.cand_set:
                 self.cand_set.remove(board, x, y)
             if self.use_incremental and self.incr_eval:
-                self.incr_eval.remove(board, x, y)
+                self.incr_eval.update(board, x, y)
             
             self.root_scores[(x, y)] = s
             if s > alpha:
@@ -1257,9 +1146,11 @@ class _ABSearch:
             return 0
         
         orig_alpha = alpha
+        is_pv = (beta - alpha) > 1
 
         # ── Transposition table lookup ──
         tt_entry = self.tt.get(self.zhash)
+        tt_move = None
         if tt_entry and tt_entry[0] >= depth:
             tt_depth, tt_score, tt_flag, tt_move = tt_entry
             self.tt_hits += 1
@@ -1271,74 +1162,146 @@ class _ABSearch:
                 beta = min(beta, tt_score)
             if alpha >= beta:
                 return tt_score
+        elif tt_entry:
+            tt_move = tt_entry[3]
 
         if depth <= 0:
             score = self._qeval(board, stone, opp)
             self._tt_store(0, score, TT_EXACT, None)
             return score
         
-        # ── Null-Move Pruning ──
-        # If we skip our turn and the position is still good, prune
+        # ── Razoring (depth 1-3, non-PV) ──
+        if not is_pv and depth <= 3 and prev_move is not None:
+            razor_margins = (0, 300, 600, 900)
+            static_eval = self._qeval(board, stone, opp)
+            if static_eval + razor_margins[depth] <= alpha:
+                return static_eval
+        
+        # ── Null-Move Pruning (adaptive reduction) ──
         if (self.use_nmp and depth >= NMP_MIN_DEPTH and
                 prev_move is not None and ply > 0):
-            # Do a null-move (pass) and search with reduced depth
-            # Use Zobrist pass key (just flip the side conceptually)
-            null_score = -self._ab(board, depth - 1 - NMP_REDUCTION,
+            # Adaptive R: R=2 for shallow, R=3 for deep
+            nmp_r = 2 + (1 if depth > 6 else 0)
+            null_score = -self._ab(board, depth - 1 - nmp_r,
                                    -beta, -beta + 1, opp, stone, ply + 1, None)
             if null_score >= beta:
                 self.nmp_cuts += 1
                 return beta
         
+        # ── Futility pruning flag (depth 1-2, non-PV) ──
+        futility_pruning = False
+        futility_base = 0
+        if not is_pv and depth <= 2 and prev_move is not None:
+            futility_base = self._qeval(board, stone, opp)
+            if futility_base + 300 * depth <= alpha:
+                futility_pruning = True
+        
         # Generate and sort candidates
-        max_m = min(10, 5 + depth * 2)
+        # PV nodes get wider search, non-PV nodes get narrower
+        if is_pv:
+            max_m = min(15, 6 + depth * 2)
+        else:
+            max_m = min(10, 5 + depth * 2)
         if self.use_incremental and self.cand_set:
             raw_cands = self.cand_set.get()
-            # Quick score and sort
-            cands = self._score_cands_fast(board, raw_cands, stone, opp, max_m)
+            # Quick score and sort — returns (score, x, y) tuples for unified ordering
+            cands, tactical_scores = self._score_cands_fast(board, raw_cands, stone, opp, max_m)
         else:
             cands = _fast_sorted_candidates(board, stone, opp, max_moves=max_m)
+            tactical_scores = {}
         
         if not cands:
             return 0
         
-        # Order with killer/history/counter heuristics
-        cands = self._order_moves(board, cands, stone, opp, ply, prev_move)
+        # ── Internal Iterative Deepening (IID) ──
+        if is_pv and tt_move is None and depth >= 5:
+            self._ab(board, depth - 2, alpha, beta, stone, opp, ply, prev_move)
+            iid_entry = self.tt.get(self.zhash)
+            if iid_entry and iid_entry[3]:
+                tt_move = iid_entry[3]
+        
+        # Order with killer/history/counter heuristics + tactical scores
+        cands = self._order_moves(board, cands, stone, opp, ply, prev_move,
+                                  tactical_scores=tactical_scores)
         
         best_move = None
         moves_searched = 0
         
         for x, y in cands:
-            # Incremental updates
-            if self.use_incremental and self.incr_eval:
-                self.incr_eval.prepare_place(board, x, y)
+            # Futility pruning: skip late moves at shallow depths
+            if futility_pruning and moves_searched > 0 and best_move is not None:
+                # Only prune non-tactical moves (not winning / not blocking wins)
+                tac = tactical_scores.get((x, y), 0)
+                if tac < FOUR:
+                    continue
             
+            # Place stone + incremental updates
             board[y][x] = stone
             self.zhash = _zobrist_update(self.zhash, x, y, 0, stone)
             if self.use_incremental and self.cand_set:
                 self.cand_set.place(board, x, y)
             if self.use_incremental and self.incr_eval:
-                self.incr_eval.place(board, x, y, stone)
+                self.incr_eval.update(board, x, y)
             
             # Immediate win check (before expensive recursive search)
             if _has_five(board, x, y, stone):
                 # Undo
-                if self.use_incremental and self.incr_eval:
-                    self.incr_eval.prepare_remove(board, x, y)
                 board[y][x] = 0
                 self.zhash = _zobrist_update(self.zhash, x, y, stone, 0)
                 if self.use_incremental and self.cand_set:
                     self.cand_set.remove(board, x, y)
                 if self.use_incremental and self.incr_eval:
-                    self.incr_eval.remove(board, x, y)
+                    self.incr_eval.update(board, x, y)
                 return FIVE + depth
+            
+            # ── Threat Extension ──
+            extension = 0
+            if depth >= 2:
+                BS = BOARD_SIZE
+                for ddx, ddy in DIRECTIONS:
+                    c1, nx, ny = 0, x + ddx, y + ddy
+                    while 0 <= nx < BS and 0 <= ny < BS and board[ny][nx] == stone:
+                        c1 += 1; nx += ddx; ny += ddy
+                    c2, nx2, ny2 = 0, x - ddx, y - ddy
+                    while 0 <= nx2 < BS and 0 <= ny2 < BS and board[ny2][nx2] == stone:
+                        c2 += 1; nx2 -= ddx; ny2 -= ddy
+                    if 1 + c1 + c2 == 4:
+                        ex1, ey1 = x + ddx * (c1 + 1), y + ddy * (c1 + 1)
+                        ex2, ey2 = x - ddx * (c2 + 1), y - ddy * (c2 + 1)
+                        o = 0
+                        if 0 <= ex1 < BS and 0 <= ey1 < BS and board[ey1][ex1] == 0:
+                            o += 1
+                        if 0 <= ex2 < BS and 0 <= ey2 < BS and board[ey2][ex2] == 0:
+                            o += 1
+                        if o >= 1:
+                            extension = 1
+                            break
+                # Also extend if opponent has a four that this move might be blocking
+                if extension == 0 and prev_move is not None:
+                    for ddx, ddy in DIRECTIONS:
+                        c1, nx, ny = 0, x + ddx, y + ddy
+                        while 0 <= nx < BS and 0 <= ny < BS and board[ny][nx] == opp:
+                            c1 += 1; nx += ddx; ny += ddy
+                        c2, nx2, ny2 = 0, x - ddx, y - ddy
+                        while 0 <= nx2 < BS and 0 <= ny2 < BS and board[ny2][nx2] == opp:
+                            c2 += 1; nx2 -= ddx; ny2 -= ddy
+                        if 1 + c1 + c2 >= 4:
+                            extension = 1
+                            break
+            
+            # Limit total extensions per path
+            actual_ext = min(extension, 1) if ply < 12 else 0
             
             # ── Late Move Reduction ──
             if (self.use_lmr and depth >= LMR_MIN_DEPTH and
                     moves_searched >= LMR_FULL_MOVES and
-                    best_move is not None):
+                    best_move is not None and extension == 0):
                 # Reduce depth for late moves
                 r = _LMR_TABLE[min(depth, 63)][min(moves_searched, 63)]
                 r = min(r, depth - 1)  # Don't reduce below depth 1
+                # Reduce less at PV nodes
+                if is_pv and r > 0:
+                    r = max(1, r - 1)
                 
                 if r > 0:
                     # Reduced depth search
@@ -1348,32 +1311,30 @@ class _ABSearch:
                     if not self.timeout and s > alpha:
                         # Re-search at full depth
                         self.lmr_researches += 1
-                        s = -self._ab(board, depth - 1, -beta, -alpha,
+                        s = -self._ab(board, depth - 1 + actual_ext, -beta, -alpha,
                                       opp, stone, ply + 1, (x, y))
                 else:
-                    s = -self._ab(board, depth - 1, -beta, -alpha,
+                    s = -self._ab(board, depth - 1 + actual_ext, -beta, -alpha,
                                   opp, stone, ply + 1, (x, y))
             elif moves_searched == 0:
                 # First move: full window (PVS)
-                s = -self._ab(board, depth - 1, -beta, -alpha,
+                s = -self._ab(board, depth - 1 + actual_ext, -beta, -alpha,
                               opp, stone, ply + 1, (x, y))
             else:
                 # PVS: null window first
-                s = -self._ab(board, depth - 1, -alpha - 1, -alpha,
+                s = -self._ab(board, depth - 1 + actual_ext, -alpha - 1, -alpha,
                               opp, stone, ply + 1, (x, y))
                 if not self.timeout and alpha < s < beta:
-                    s = -self._ab(board, depth - 1, -beta, -s,
+                    s = -self._ab(board, depth - 1 + actual_ext, -beta, -s,
                                   opp, stone, ply + 1, (x, y))
             
             # Undo
-            if self.use_incremental and self.incr_eval:
-                self.incr_eval.prepare_remove(board, x, y)
             board[y][x] = 0
             self.zhash = _zobrist_update(self.zhash, x, y, stone, 0)
             if self.use_incremental and self.cand_set:
                 self.cand_set.remove(board, x, y)
             if self.use_incremental and self.incr_eval:
-                self.incr_eval.remove(board, x, y)
+                self.incr_eval.update(board, x, y)
             
             if self.timeout:
                 return alpha
@@ -1400,10 +1361,17 @@ class _ABSearch:
         return alpha
     
     def _score_cands_fast(self, board, raw_cands, stone, opp, max_moves):
-        """Fast candidate scoring from incremental candidate set."""
+        """Fast candidate scoring from incremental candidate set.
+        
+        Returns (cands, tactical_scores) where:
+          cands = [(x, y), ...] sorted by score, truncated to max_moves
+          tactical_scores = {(x, y): score} for all scored candidates
+        """
         center = BOARD_SIZE // 2
         _st = _SCORE_TABLE
+        BS = BOARD_SIZE
         scored = []
+        tactical_scores = {}
         for x, y in raw_cands:
             if board[y][x] != 0:
                 continue
@@ -1411,31 +1379,42 @@ class _ABSearch:
             defense = 0
             atk_t = 0
             def_t = 0
+            brd = board  # local alias for speed
             for dx, dy in DIRECTIONS:
-                a1 = _count_dir(board, x, y, dx, dy, stone)
-                a2 = _count_dir(board, x, y, -dx, -dy, stone)
+                # Inlined _count_dir for attack
+                a1, nx, ny = 0, x + dx, y + dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == stone:
+                    a1 += 1; nx += dx; ny += dy
+                a2, nx, ny = 0, x - dx, y - dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == stone:
+                    a2 += 1; nx -= dx; ny -= dy
                 a_count = 1 + a1 + a2
                 aex1, aey1 = x + dx * (a1 + 1), y + dy * (a1 + 1)
                 aex2, aey2 = x - dx * (a2 + 1), y - dy * (a2 + 1)
                 a_open = 0
-                if 0 <= aex1 < BOARD_SIZE and 0 <= aey1 < BOARD_SIZE and board[aey1][aex1] == 0:
+                if 0 <= aex1 < BS and 0 <= aey1 < BS and brd[aey1][aex1] == 0:
                     a_open += 1
-                if 0 <= aex2 < BOARD_SIZE and 0 <= aey2 < BOARD_SIZE and board[aey2][aex2] == 0:
+                if 0 <= aex2 < BS and 0 <= aey2 < BS and brd[aey2][aex2] == 0:
                     a_open += 1
                 a_s = _st.get((a_count, a_open), FIVE if a_count >= 5 else 0)
                 attack += a_s
                 if (a_count == 4 and a_open >= 1) or (a_count == 3 and a_open == 2):
                     atk_t += 1
 
-                d1 = _count_dir(board, x, y, dx, dy, opp)
-                d2 = _count_dir(board, x, y, -dx, -dy, opp)
+                # Inlined _count_dir for defense
+                d1, nx, ny = 0, x + dx, y + dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == opp:
+                    d1 += 1; nx += dx; ny += dy
+                d2, nx, ny = 0, x - dx, y - dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == opp:
+                    d2 += 1; nx -= dx; ny -= dy
                 d_count = 1 + d1 + d2
                 dex1, dey1 = x + dx * (d1 + 1), y + dy * (d1 + 1)
                 dex2, dey2 = x - dx * (d2 + 1), y - dy * (d2 + 1)
                 d_open = 0
-                if 0 <= dex1 < BOARD_SIZE and 0 <= dey1 < BOARD_SIZE and board[dey1][dex1] == 0:
+                if 0 <= dex1 < BS and 0 <= dey1 < BS and brd[dey1][dex1] == 0:
                     d_open += 1
-                if 0 <= dex2 < BOARD_SIZE and 0 <= dey2 < BOARD_SIZE and board[dey2][dex2] == 0:
+                if 0 <= dex2 < BS and 0 <= dey2 < BS and brd[dey2][dex2] == 0:
                     d_open += 1
                 d_s = _st.get((d_count, d_open), FIVE if d_count >= 5 else 0)
                 defense += d_s
@@ -1448,53 +1427,88 @@ class _ABSearch:
                 defense += FOUR
             
             dist = abs(x - center) + abs(y - center)
-            scored.append((attack + defense * 1.25 + max(0, 14 - dist), x, y))
+            total = attack + defense * 1.25 + max(0, 14 - dist)
+            scored.append((total, x, y))
+            tactical_scores[(x, y)] = total
         
         scored.sort(reverse=True)
-        return [(x, y) for _, x, y in scored[:max_moves]]
+        cands = [(x, y) for _, x, y in scored[:max_moves]]
+        return cands, tactical_scores
 
     def _qeval(self, board, stone, opp):
-        """Quiescence: static eval + immediate threat check."""
+        """Quiescence: static eval + immediate threat check.
+        
+        Optimized: pre-filters candidates to only check those that could
+        form five-in-a-row (cells adjacent to 3+ in a line), reducing the
+        number of expensive board mutations.
+        """
+        BS = BOARD_SIZE
+        
         # Use incremental eval if available
         if self.use_incremental and self.incr_eval:
-            # Quick threat check
             cands = self.cand_set.get() if self.cand_set else _get_candidates(board, radius=1)
+            
+            # Pre-filter: only check cells that have a chance of forming five
+            # A cell can complete a five only if it has 4+ in some direction
+            brd = board
             for x, y in cands:
-                if board[y][x] != 0:
+                if brd[y][x] != 0:
                     continue
-                board[y][x] = stone
-                if _has_five(board, x, y, stone):
-                    board[y][x] = 0
-                    return FIVE
-                board[y][x] = 0
+                # Check if placing stone here makes five
+                for dx, dy in DIRECTIONS:
+                    c1, nx, ny = 0, x + dx, y + dy
+                    while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == stone:
+                        c1 += 1; nx += dx; ny += dy
+                    c2, nx, ny = 0, x - dx, y - dy
+                    while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == stone:
+                        c2 += 1; nx -= dx; ny -= dy
+                    if 1 + c1 + c2 >= 5:
+                        return FIVE
+            
             for x, y in cands:
-                if board[y][x] != 0:
+                if brd[y][x] != 0:
                     continue
-                board[y][x] = opp
-                if _has_five(board, x, y, opp):
-                    board[y][x] = 0
-                    return -FIVE + 1
-                board[y][x] = 0
+                # Check if placing opp here makes five (threat we must block)
+                for dx, dy in DIRECTIONS:
+                    c1, nx, ny = 0, x + dx, y + dy
+                    while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == opp:
+                        c1 += 1; nx += dx; ny += dy
+                    c2, nx, ny = 0, x - dx, y - dy
+                    while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == opp:
+                        c2 += 1; nx -= dx; ny -= dy
+                    if 1 + c1 + c2 >= 5:
+                        return -FIVE + 1
+            
             return self.incr_eval.get_score(stone)
         
-        # Fallback to non-incremental
+        # Fallback to non-incremental (same optimization)
         cands = _get_candidates(board, radius=1)
+        brd = board
         for x, y in cands:
-            if board[y][x] != 0:
+            if brd[y][x] != 0:
                 continue
-            board[y][x] = stone
-            if _has_five(board, x, y, stone):
-                board[y][x] = 0
-                return FIVE
-            board[y][x] = 0
+            for dx, dy in DIRECTIONS:
+                c1, nx, ny = 0, x + dx, y + dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == stone:
+                    c1 += 1; nx += dx; ny += dy
+                c2, nx, ny = 0, x - dx, y - dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == stone:
+                    c2 += 1; nx -= dx; ny -= dy
+                if 1 + c1 + c2 >= 5:
+                    return FIVE
+        
         for x, y in cands:
-            if board[y][x] != 0:
+            if brd[y][x] != 0:
                 continue
-            board[y][x] = opp
-            if _has_five(board, x, y, opp):
-                board[y][x] = 0
-                return -FIVE + 1
-            board[y][x] = 0
+            for dx, dy in DIRECTIONS:
+                c1, nx, ny = 0, x + dx, y + dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == opp:
+                    c1 += 1; nx += dx; ny += dy
+                c2, nx, ny = 0, x - dx, y - dy
+                while 0 <= nx < BS and 0 <= ny < BS and brd[ny][nx] == opp:
+                    c2 += 1; nx -= dx; ny -= dy
+                if 1 + c1 + c2 >= 5:
+                    return -FIVE + 1
         
         if stone == self.ai:
             return _evaluate(board, self.ai, self.human)
@@ -1549,13 +1563,17 @@ class _LazySMP:
             n_workers = max(1, os.cpu_count() or 1)
         self.n_workers = n_workers
     
-    def search(self, board, ai_stone, human_stone, max_depth, max_time, progress_cb=None):
+    def search(self, board, ai_stone, human_stone, max_depth, max_time,
+               progress_cb=None, shared_tt=None, shared_history=None):
         """Run parallel search and return best result."""
         if self.n_workers <= 1:
             # Single-threaded fallback
             searcher = _ABSearch(ai_stone, human_stone, max_time,
                                  progress_cb=progress_cb,
-                                 use_incremental=True)
+                                 use_incremental=True,
+                                 shared_tt=shared_tt)
+            if shared_history:
+                searcher.history = dict(shared_history)
             return searcher.search(board, max_depth), searcher
         
         # Flatten board for sharing
@@ -1587,7 +1605,10 @@ class _LazySMP:
         # Main thread search (with progress callback)
         main_searcher = _ABSearch(ai_stone, human_stone, max_time,
                                    progress_cb=progress_cb,
-                                   use_incremental=True)
+                                   use_incremental=True,
+                                   shared_tt=shared_tt)
+        if shared_history:
+            main_searcher.history = dict(shared_history)
         main_move, main_score = main_searcher.search(board, max_depth)
         
         # Wait for workers (with timeout)
@@ -1631,14 +1652,18 @@ class GomokuAI:
         5:  (4,  3.5),
         6:  (6,  4.5),
         7:  (6,  5.0),
-        8:  (6,  5.0),
-        9:  (6,  5.0),
-        10: (6,  5.0),
+        8:  (8,  6.0),
+        9:  (10, 7.0),
+        10: (12, 7.0),
     }
 
     def __init__(self, difficulty=5):
         self.difficulty = difficulty
         self._smp = None
+        # Persistent TT across moves — shared with _ABSearch instances
+        self._shared_tt = {}
+        # Persistent history heuristic (decayed each move)
+        self._shared_history = {}
 
     def set_difficulty(self, d):
         self.difficulty = max(1, min(10, d))
@@ -1747,13 +1772,27 @@ class GomokuAI:
         pre_search_elapsed = time.time() - t0
         max_time = max(0.5, max_time - pre_search_elapsed)
         
+        # Decay shared history each move (halve all values)
+        if self._shared_history:
+            for k in self._shared_history:
+                self._shared_history[k] >>= 1
+            # Remove zero entries to keep dict small
+            self._shared_history = {k: v for k, v in self._shared_history.items() if v > 0}
+        
         if self._use_smp():
             # Use Lazy SMP for higher difficulties on 4+ core machines
             smp = self._get_smp()
-            (move, score), searcher = smp.search(grid, ai, human, depth, max_time)
+            (move, score), searcher = smp.search(grid, ai, human, depth, max_time,
+                                                  shared_tt=self._shared_tt,
+                                                  shared_history=self._shared_history)
         else:
-            searcher = _ABSearch(ai, human, max_time, use_incremental=True)
+            searcher = _ABSearch(ai, human, max_time, use_incremental=True,
+                                 shared_tt=self._shared_tt)
+            searcher.history = dict(self._shared_history)
             move, score = searcher.search(grid, depth)
+        
+        # Persist history back
+        self._shared_history = searcher.history
         
         elapsed = time.time() - t0
 
@@ -1944,17 +1983,29 @@ class GomokuAI:
                     'best': best_pos
                 })
 
+        # Decay shared history each move (halve all values)
+        if self._shared_history:
+            for k in self._shared_history:
+                self._shared_history[k] >>= 1
+            self._shared_history = {k: v for k, v in self._shared_history.items() if v > 0}
+
         # Use Lazy SMP for high difficulty on 4+ core machines
         if self._use_smp():
             smp = self._get_smp()
             (move, score), searcher = smp.search(grid, ai, human, depth, max_time,
-                                                  progress_cb=ab_progress)
+                                                   progress_cb=ab_progress,
+                                                   shared_tt=self._shared_tt,
+                                                   shared_history=self._shared_history)
             _searcher_ref[0] = searcher
         else:
             searcher = _ABSearch(ai, human, max_time, progress_cb=ab_progress,
-                                 use_incremental=True)
+                                 use_incremental=True, shared_tt=self._shared_tt)
+            searcher.history = dict(self._shared_history)
             _searcher_ref[0] = searcher
             move, score = searcher.search(grid, depth)
+        
+        # Persist history back
+        self._shared_history = searcher.history
         
         elapsed = time.time() - t0
 

@@ -421,6 +421,7 @@ async function runAiMoveStream() {
                         move: moveHistory.length + 1
                     });
                     await syncAiMove(finalData.ai_move);
+                    
                 }
                 drawBoard();
                 updateStatus();
@@ -600,6 +601,9 @@ async function newGame() {
     moveHistory = [];
     lastPvLine = null;
     stopGhostAnimation();
+    
+    const timeLabel = document.getElementById('aiTimeLabel');
+    if (timeLabel) timeLabel.classList.add('hidden');
 
     try {
         const res = await fetch('/api/board/new', {
@@ -631,36 +635,259 @@ function isGameInProgress() {
 // ══════════════════════════════════════════════════
 // 기보 목록 / 재생
 // ══════════════════════════════════════════════════
+
+// 기보 목록 상태
+let allRecords = [];       // 전체 기보 (서버에서 한 번만 로드)
+let filteredRecords = [];  // 날짜 필터 적용 후
+let currentPage = 1;
+const PAGE_SIZE = 5;
+
+// 달력 상태
+let calYear = 0;
+let calMonth = 0;         // 0-based
+let selectedDate = '';    // 'YYYY-MM-DD' or ''
+let recordDateSet = new Set(); // 기보가 있는 날짜 집합
+
 async function loadRecords() {
     const listEl = document.getElementById('recordList');
+    const paginEl = document.getElementById('pagination');
     if (!listEl) return;
     listEl.innerHTML = '<div class="record-item"><span>불러오는 중...</span></div>';
+    if (paginEl) paginEl.innerHTML = '';
 
     try {
         const res = await fetch('/api/records', { credentials: 'include' });
         const data = await res.json();
-        listEl.innerHTML = '';
+        allRecords = data.records || [];
+        currentPage = 1;
+        selectedDate = '';
 
-        if (!data.records || data.records.length === 0) {
-            listEl.innerHTML = '<div class="record-item"><span>기록 없음</span></div>';
-            return;
+        // 기보가 있는 날짜 집합 구축
+        recordDateSet = new Set(allRecords.map(r => (r.timestamp || '').slice(0, 10)));
+
+        updateSearchClearBtn();
+        applyFilterAndRender();
+
+        // 달력은 오늘 기준으로 초기화 (열려 있으면 다시 그림)
+        const today = new Date();
+        calYear = today.getFullYear();
+        calMonth = today.getMonth();
+        const calEl = document.getElementById('calDropdown');
+        if (calEl && !calEl.classList.contains('hidden')) {
+            renderCalendar();
         }
-        data.records.forEach(rec => {
-            const item = document.createElement('div');
-            item.className = 'record-item';
-            const resultText = rec.winner === 'black' ? '승리' : rec.winner === 'draw' ? '무승부' : '패배';
-            item.innerHTML = `
-                <div class="record-info">
-                    <span class="record-result">${resultText}</span>
-                    <span class="record-time">${rec.timestamp || ''}</span>
-                </div>
-                <span class="record-moves">${rec.move_count || '-'}수</span>
-            `;
-            item.addEventListener('click', () => loadReplay(rec.id));
-            listEl.appendChild(item);
-        });
     } catch (e) {
         listEl.innerHTML = '<div class="record-item"><span>불러오기 실패</span></div>';
+    }
+}
+
+// ── 커스텀 달력 ─────────────────────────────────
+
+function openCalendar() {
+    const calEl = document.getElementById('calDropdown');
+    const btn = document.getElementById('btnDatePick');
+    if (!calEl) return;
+    const isOpen = !calEl.classList.contains('hidden');
+    if (isOpen) {
+        calEl.classList.add('hidden');
+        btn && btn.classList.remove('active');
+    } else {
+        // 선택된 날짜가 있으면 그 달, 없으면 오늘
+        if (selectedDate) {
+            const [y, m] = selectedDate.split('-').map(Number);
+            calYear = y; calMonth = m - 1;
+        } else {
+            const today = new Date();
+            calYear = today.getFullYear();
+            calMonth = today.getMonth();
+        }
+        renderCalendar();
+        calEl.classList.remove('hidden');
+        btn && btn.classList.add('active');
+    }
+}
+
+function closeCalendar() {
+    const calEl = document.getElementById('calDropdown');
+    const btn = document.getElementById('btnDatePick');
+    calEl && calEl.classList.add('hidden');
+    btn && btn.classList.remove('active');
+}
+
+function renderCalendar() {
+    const titleEl = document.getElementById('calTitle');
+    const gridEl = document.getElementById('calGrid');
+    if (!titleEl || !gridEl) return;
+
+    titleEl.textContent = `${calYear}년 ${calMonth + 1}월`;
+    gridEl.innerHTML = '';
+
+    // 요일 헤더
+    ['일', '월', '화', '수', '목', '금', '토'].forEach(d => {
+        const lbl = document.createElement('div');
+        lbl.className = 'cal-day-label';
+        lbl.textContent = d;
+        gridEl.appendChild(lbl);
+    });
+
+    const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=일
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    const todayStr = new Date().toLocaleDateString('sv-SE'); // 'YYYY-MM-DD'
+
+    // 빈 칸 (1일 이전)
+    for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement('button');
+        empty.className = 'cal-day cal-empty';
+        empty.disabled = true;
+        gridEl.appendChild(empty);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+        const mm = String(calMonth + 1).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        const dateStr = `${calYear}-${mm}-${dd}`;
+
+        const btn = document.createElement('button');
+        btn.className = 'cal-day';
+        btn.textContent = d;
+
+        if (recordDateSet.has(dateStr)) btn.classList.add('has-record');
+        if (dateStr === selectedDate) btn.classList.add('selected');
+        if (dateStr === todayStr) btn.classList.add('today');
+
+        btn.addEventListener('click', () => selectDate(dateStr));
+        gridEl.appendChild(btn);
+    }
+}
+
+function selectDate(dateStr) {
+    selectedDate = dateStr;
+    currentPage = 1;
+
+    // 버튼 라벨 업데이트
+    const label = document.getElementById('datePickLabel');
+    if (label) label.textContent = dateStr.replace(/-/g, '. ');
+
+    updateSearchClearBtn();
+    closeCalendar();
+    applyFilterAndRender();
+}
+
+function applyFilterAndRender() {
+    if (selectedDate) {
+        filteredRecords = allRecords.filter(rec =>
+            (rec.timestamp || '').startsWith(selectedDate)
+        );
+    } else {
+        filteredRecords = allRecords.slice();
+    }
+
+    const totalPages = Math.max(1, Math.ceil(filteredRecords.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = 1;
+
+    renderRecordList();
+    renderPagination();
+}
+
+function renderRecordList() {
+    const listEl = document.getElementById('recordList');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    if (filteredRecords.length === 0) {
+        listEl.innerHTML = '<div class="record-item"><span>기록 없음</span></div>';
+        return;
+    }
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = filteredRecords.slice(start, start + PAGE_SIZE);
+
+    pageItems.forEach(rec => {
+        const item = document.createElement('div');
+        item.className = 'record-item';
+        const resultText = rec.winner === 'black' ? '승리' : rec.winner === 'draw' ? '무승부' : '패배';
+        item.innerHTML = `
+            <div class="record-info">
+                <span class="record-result">${resultText}</span>
+                <span class="record-time">${rec.timestamp || ''}</span>
+            </div>
+            <span class="record-moves">${rec.move_count || '-'}수</span>
+        `;
+        item.addEventListener('click', () => loadReplay(rec.id));
+        listEl.appendChild(item);
+    });
+}
+
+function renderPagination() {
+    const paginEl = document.getElementById('pagination');
+    if (!paginEl) return;
+    paginEl.innerHTML = '';
+
+    const totalPages = Math.max(1, Math.ceil(filteredRecords.length / PAGE_SIZE));
+    if (totalPages <= 1) return;
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'btn-page';
+    prevBtn.textContent = '‹';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => { currentPage--; renderRecordList(); renderPagination(); });
+    paginEl.appendChild(prevBtn);
+
+    const WINDOW = 2;
+    let pageStart = Math.max(1, currentPage - WINDOW);
+    let pageEnd   = Math.min(totalPages, currentPage + WINDOW);
+    if (pageStart === 1) pageEnd = Math.min(totalPages, 1 + WINDOW * 2);
+    if (pageEnd === totalPages) pageStart = Math.max(1, totalPages - WINDOW * 2);
+
+    if (pageStart > 1) {
+        paginEl.appendChild(_pageBtn(1));
+        if (pageStart > 2) {
+            const dots = document.createElement('span');
+            dots.className = 'page-info';
+            dots.textContent = '…';
+            paginEl.appendChild(dots);
+        }
+    }
+    for (let p = pageStart; p <= pageEnd; p++) paginEl.appendChild(_pageBtn(p));
+    if (pageEnd < totalPages) {
+        if (pageEnd < totalPages - 1) {
+            const dots = document.createElement('span');
+            dots.className = 'page-info';
+            dots.textContent = '…';
+            paginEl.appendChild(dots);
+        }
+        paginEl.appendChild(_pageBtn(totalPages));
+    }
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'btn-page';
+    nextBtn.textContent = '›';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener('click', () => { currentPage++; renderRecordList(); renderPagination(); });
+    paginEl.appendChild(nextBtn);
+}
+
+function _pageBtn(p) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-page' + (p === currentPage ? ' active' : '');
+    btn.textContent = p;
+    btn.addEventListener('click', () => {
+        currentPage = p;
+        renderRecordList();
+        renderPagination();
+    });
+    return btn;
+}
+
+function updateSearchClearBtn() {
+    const clearBtn = document.getElementById('btnSearchClear');
+    const label = document.getElementById('datePickLabel');
+    if (!clearBtn) return;
+    if (selectedDate) {
+        clearBtn.classList.remove('hidden');
+    } else {
+        clearBtn.classList.add('hidden');
+        if (label) label.textContent = '날짜 선택';
     }
 }
 
@@ -872,6 +1099,36 @@ function init() {
         stopAutoPlay();
         await loadRecords();
         showSection('replaySelect');
+    });
+
+    // 달력 피커
+    document.getElementById('btnDatePick')?.addEventListener('click', openCalendar);
+    document.getElementById('btnSearchClear')?.addEventListener('click', () => {
+        selectedDate = '';
+        currentPage = 1;
+        updateSearchClearBtn();
+        closeCalendar();
+        applyFilterAndRender();
+    });
+    document.getElementById('calPrevMonth')?.addEventListener('click', () => {
+        calMonth--;
+        if (calMonth < 0) { calMonth = 11; calYear--; }
+        renderCalendar();
+    });
+    document.getElementById('calNextMonth')?.addEventListener('click', () => {
+        calMonth++;
+        if (calMonth > 11) { calMonth = 0; calYear++; }
+        renderCalendar();
+    });
+    // 달력 바깥 클릭 시 닫기
+    document.addEventListener('click', (e) => {
+        const cal = document.getElementById('calDropdown');
+        const btn = document.getElementById('btnDatePick');
+        const clearBtn = document.getElementById('btnSearchClear');
+        if (!cal || cal.classList.contains('hidden')) return;
+        if (!cal.contains(e.target) && e.target !== btn && e.target !== clearBtn) {
+            closeCalendar();
+        }
     });
 
     // 기보 재생 컨트롤

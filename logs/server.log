@@ -1,0 +1,359 @@
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8083
+ * Running on http://172.26.15.97:8083
+Press CTRL+C to quit
+127.0.0.1 - - [18/Mar/2026 03:19:28] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:19:44] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:19:44] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:19:44] "GET /static/js/game.js?v=25 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:19:45] "GET /api/records HTTP/1.1" 200 -
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8083
+ * Running on http://172.26.15.97:8083
+Press CTRL+C to quit
+127.0.0.1 - - [18/Mar/2026 03:20:59] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:21:08] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:21:08] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:21:08] "GET /static/js/game.js?v=25 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:21:09] "GET /api/records HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:08] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:08] "GET /static/css/style.css?v=2 HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:08] "GET /static/js/game.js?v=25 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:23:09] "GET /api/records HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:13] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:13] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:23:13] "GET /static/js/game.js?v=25 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:23:14] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:14] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:23:14] "GET /static/js/game.js?v=25 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:23:15] "GET /api/records HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:39] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:39] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:23:39] "GET /static/js/game.js?v=25 HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:23:40] "GET /api/records HTTP/1.1" 200 -
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8083
+ * Running on http://172.26.15.97:8083
+Press CTRL+C to quit
+210.113.122.224 - - [18/Mar/2026 03:24:20] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:24:20] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:24:20] "GET /static/js/game.js?v=26 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Mar/2026 03:24:20] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:24:21] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:24:21] "GET /static/css/style.css?v=2 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:24:21] "GET /static/js/game.js?v=26 HTTP/1.1" 304 -
+210.113.122.224 - - [18/Mar/2026 03:24:22] "GET /api/records HTTP/1.1" 200 -
+127.0.0.1 - - [18/Mar/2026 03:24:25] "GET /api/records HTTP/1.1" 200 -
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8083
+ * Running on http://172.26.15.97:8083
+Press CTRL+C to quit
+127.0.0.1 - - [18/Mar/2026 03:27:53] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:28:06] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:28:07] "GET /static/css/style.css?v=2 HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:28:07] "GET /static/js/game.js?v=27 HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:28:08] "GET /api/records HTTP/1.1" 200 -
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8083
+ * Running on http://172.26.15.97:8083
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [18/Mar/2026 03:38:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [18/Mar/2026 03:39:56] "GET /api/records HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:40:47] "GET / HTTP/1.1" 200 -
+210.113.122.224 - - [18/Mar/2026 03:40:47] "[36mGET /static/css/style.css?v=2 HTTP/1.1[0m" 304 -
+210.113.122.224 - - [18/Mar/2026 03:40:47] "[36mGET /static/js/game.js?v=27 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 03:51:15] "GET / HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:15] "GET /static/js/game.js?v=25 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:15] "GET /static/css/style.css?v=2 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:15] "GET /static/js/game.js?v=27 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:18] "GET /api/stats HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:21] "GET /api/records HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:23] "GET /api/records/20260317_132628 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:51:29] "GET /api/records HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:45] "GET / HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:46] "[36mGET /static/css/style.css?v=2 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 03:56:46] "[36mGET /static/js/game.js?v=27 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 03:56:49] "POST /api/board/new HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:50] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:50] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:51] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:52] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:52] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:54] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:56] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:56] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 03:56:59] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 05:07:31] "GET / HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 05:07:31] "[36mGET /static/css/style.css?v=2 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 05:07:32] "[36mGET /static/js/game.js?v=27 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 05:07:36] "GET /api/stats HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 05:07:40] "GET /api/records HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 05:07:42] "GET /api/records/20260317_132330 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 05:07:45] "GET /api/records HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 05:08:01] "GET /api/records/20260317_132628 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:30] "GET / HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:30] "[36mGET /static/js/game.js?v=27 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 09:45:30] "[36mGET /static/css/style.css?v=2 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 09:45:31] "POST /api/board/new HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:32] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:32] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:33] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:33] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:33] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:36] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:37] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:37] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:40] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:41] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:42] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:42] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:44] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:44] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:45] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:46] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:46] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:50] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:55] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:55] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:57] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:59] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:45:59] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:00] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:03] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:08] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:08] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:08] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:10] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:10] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:11] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:13] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:13] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:13] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:46:16] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:44] "GET / HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:44] "[36mGET /static/css/style.css?v=2 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 09:47:44] "[36mGET /static/js/game.js?v=27 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 09:47:45] "GET / HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:45] "GET /static/css/style.css?v=2 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:45] "[36mGET /static/css/style.css?v=2 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 09:47:45] "GET /static/js/game.js?v=27 HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:45] "[36mGET /static/js/game.js?v=27 HTTP/1.1[0m" 304 -
+211.36.147.243 - - [18/Mar/2026 09:47:46] "POST /api/board/new HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:47] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:47] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:48] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:49] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:49] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:51] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:53] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:53] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:53] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:56] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:56] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:57] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:59] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:47:59] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:01] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:04] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:04] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:07] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:08] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:08] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:11] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:14] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:14] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:19] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:21] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:21] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:21] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:24] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:24] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:28] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:30] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:30] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:35] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:38] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:39] "POST /api/ai/move/stream HTTP/1.1" 200 -
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (9,7) score=-40105 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (9,7) score=-41470 nodes=68 tt_hits=2 nmp=0 lmr_re=0 time=0.04s depth_time=0.03s
+[AI] Depth 3: (9,7) score=-39597 nodes=363 tt_hits=67 nmp=0 lmr_re=0 time=0.17s depth_time=0.13s
+[AI] Depth 4: (9,7) score=-44208 nodes=1570 tt_hits=670 nmp=0 lmr_re=0 time=0.76s depth_time=0.60s
+[AI] Depth 5: (7,8) score=-39565 nodes=3849 tt_hits=1095 nmp=35 lmr_re=6 time=1.92s depth_time=1.16s
+[AI] Skipping depth 6: remaining=3.07s estimated=4.06s prev_depth=1.16s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (6,7) score=-89715 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (6,7) score=-102652 nodes=71 tt_hits=2 nmp=0 lmr_re=0 time=0.04s depth_time=0.03s
+[AI] Depth 3: (9,8) score=-89296 nodes=388 tt_hits=67 nmp=0 lmr_re=0 time=0.21s depth_time=0.17s
+[AI] Depth 4: (9,8) score=-104397 nodes=1528 tt_hits=609 nmp=0 lmr_re=0 time=0.84s depth_time=0.63s
+[AI] Depth 5: (9,7) score=-89129 nodes=3777 tt_hits=938 nmp=37 lmr_re=6 time=2.11s depth_time=1.27s
+[AI] Skipping depth 6: remaining=2.89s estimated=4.43s prev_depth=1.27s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (9,7) score=-40105 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (9,7) score=-41470 nodes=68 tt_hits=2 nmp=0 lmr_re=0 time=0.04s depth_time=0.03s
+[AI] Depth 3: (9,7) score=-39597 nodes=363 tt_hits=67 nmp=0 lmr_re=0 time=0.17s depth_time=0.13s
+[AI] Depth 4: (9,7) score=-44208 nodes=1570 tt_hits=670 nmp=0 lmr_re=0 time=0.76s depth_time=0.59s
+[AI] Depth 5: (7,8) score=-39565 nodes=3849 tt_hits=1095 nmp=35 lmr_re=6 time=1.91s depth_time=1.15s
+[AI] Skipping depth 6: remaining=3.08s estimated=4.03s prev_depth=1.15s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (6,7) score=-89715 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (6,7) score=-102652 nodes=71 tt_hits=2 nmp=0 lmr_re=0 time=0.04s depth_time=0.03s
+[AI] Depth 3: (9,8) score=-89296 nodes=388 tt_hits=67 nmp=0 lmr_re=0 time=0.21s depth_time=0.17s
+[AI] Depth 4: (9,8) score=-104397 nodes=1528 tt_hits=609 nmp=0 lmr_re=0 time=0.84s depth_time=0.63s
+[AI] Depth 5: (9,7) score=-89129 nodes=3777 tt_hits=938 nmp=37 lmr_re=6 time=2.10s depth_time=1.26s
+[AI] Skipping depth 6: remaining=2.89s estimated=4.42s prev_depth=1.26s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (10,6) score=-31864 nodes=22 tt_hits=2 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (5,7) score=-54005 nodes=74 tt_hits=5 nmp=0 lmr_re=0 time=0.05s depth_time=0.04s
+[AI] Depth 3: (7,9) score=-31019 nodes=407 tt_hits=90 nmp=0 lmr_re=0 time=0.25s depth_time=0.20s
+[AI] Depth 4: (7,9) score=-45247 nodes=1872 tt_hits=816 nmp=0 lmr_re=0 time=1.16s depth_time=0.91s
+[AI] Depth 5: (9,8) score=-30324 nodes=5462 tt_hits=1773 nmp=47 lmr_re=8 time=3.55s depth_time=2.39s
+[AI] Skipping depth 6: remaining=1.45s estimated=8.36s prev_depth=2.39s
+[AI] Pre-search: 0.01s, search budget: 4.99s
+[AI] Depth 1: (10,8) score=9999999 nodes=21 tt_hits=1 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (10,8) score=-104901 nodes=88 tt_hits=11 nmp=0 lmr_re=0 time=0.06s depth_time=0.05s
+[AI] Depth 3: (10,6) score=-92624 nodes=350 tt_hits=59 nmp=0 lmr_re=0 time=0.20s depth_time=0.15s
+[AI] Depth 4: (10,6) score=-114480 nodes=1536 tt_hits=632 nmp=0 lmr_re=0 time=0.95s depth_time=0.75s
+[AI] Depth 5: (10,6) score=9999999 nodes=3481 tt_hits=1394 nmp=34 lmr_re=7 time=2.17s depth_time=1.22s
+[AI] Skipping depth 6: remaining=2.82s estimated=4.27s prev_depth=1.22s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (7,9) score=-40105 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (7,9) score=-41470 nodes=68 tt_hits=2 nmp=0 lmr_re=0 time=0.04s depth_time=0.03s
+[AI] Depth 3: (7,9) score=-39597 nodes=365 tt_hits=66 nmp=0 lmr_re=0 time=0.17s depth_time=0.13s
+[AI] Depth 4: (7,9) score=-44208 nodes=1393 tt_hits=576 nmp=0 lmr_re=0 time=0.69s depth_time=0.52s
+[AI] Depth 5: (8,7) score=-39565 nodes=3581 tt_hits=1032 nmp=35 lmr_re=6 time=1.77s depth_time=1.08s
+[AI] Skipping depth 6: remaining=3.23s estimated=3.76s prev_depth=1.08s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (8,6) score=9559 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (8,6) score=-790 nodes=66 tt_hits=0 nmp=0 lmr_re=0 time=0.05s depth_time=0.03s
+[AI] Depth 3: (8,6) score=9999999 nodes=262 tt_hits=23 nmp=0 lmr_re=0 time=0.16s depth_time=0.11s
+[AI] Depth 4: (8,6) score=-1306 nodes=736 tt_hits=107 nmp=20 lmr_re=0 time=0.48s depth_time=0.32s
+[AI] Depth 5: (8,6) score=8374 nodes=2597 tt_hits=545 nmp=25 lmr_re=0 time=1.58s depth_time=1.10s
+[AI] Skipping depth 6: remaining=3.42s estimated=3.85s prev_depth=1.10s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (8,5) score=9999999 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (8,5) score=21844 nodes=71 tt_hits=0 nmp=0 lmr_re=0 time=0.05s depth_time=0.04s
+[AI] Depth 3: (9,7) score=9999999 nodes=356 tt_hits=67 nmp=0 lmr_re=0 time=0.22s depth_time=0.17s
+[AI] Depth 4: (5,3) score=18336 nodes=1166 tt_hits=201 nmp=24 lmr_re=0 time=0.71s depth_time=0.49s
+[AI] Depth 5: (8,10) score=18300 nodes=2536 tt_hits=330 nmp=139 lmr_re=0 time=1.63s depth_time=0.91s
+[AI] Depth 6: (8,5) score=20085 nodes=3468 tt_hits=556 nmp=192 lmr_re=9 time=2.20s depth_time=0.58s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (9,7) score=-28933 nodes=24 tt_hits=4 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (6,5) score=-42067 nodes=112 tt_hits=24 nmp=0 lmr_re=0 time=0.06s depth_time=0.05s
+[AI] Depth 3: (6,5) score=9999999 nodes=420 tt_hits=100 nmp=0 lmr_re=0 time=0.25s depth_time=0.18s
+[AI] Depth 4: (9,7) score=-39000 nodes=1539 tt_hits=370 nmp=21 lmr_re=1 time=0.90s depth_time=0.66s
+[AI] Depth 5: (10,8) score=9999999 nodes=3035 tt_hits=866 nmp=50 lmr_re=8 time=1.97s depth_time=1.06s
+[AI] Skipping depth 6: remaining=3.03s estimated=3.72s prev_depth=1.06s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (9,5) score=-64662 nodes=24 tt_hits=4 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (6,5) score=-77757 nodes=108 tt_hits=24 nmp=0 lmr_re=0 time=0.07s depth_time=0.05s
+[AI] Depth 3: (6,5) score=9999999 nodes=432 tt_hits=99 nmp=0 lmr_re=0 time=0.27s depth_time=0.21s
+[AI] Depth 4: (9,5) score=-75433 nodes=1221 tt_hits=275 nmp=21 lmr_re=0 time=0.80s depth_time=0.53s
+[AI] Depth 5: (11,8) score=9999999 nodes=5503 tt_hits=1439 nmp=74 lmr_re=19 time=3.86s depth_time=3.05s
+[AI] Skipping depth 6: remaining=1.14s estimated=10.68s prev_depth=3.05s
+[AI] Pre-search: 0.00s, search budget: 5.00s
+[AI] Depth 1: (9,5) score=-63515 nodes=21 tt_hits=1 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (6,5) score=-76610 nodes=102 tt_hits=19 nmp=0 lmr_re=0 time=0.06s depth_time=0.05s
+[AI] Depth 3: (9,5) score=9999999 nodes=397 tt_hits=82 nmp=0 lmr_re=0 time=0.25s depth_time=0.18s
+[AI] Depth 4: (6,5) score=-74858 nodes=1318 tt_hits=314 nmp=21 lmr_re=0 time=0.85s depth_time=0.60s
+[AI] Depth 5: (10,7) score=9999999 nodes=3987 tt_hits=1304 nmp=60 lmr_re=9 time=2.63s depth_time=1.79s
+[AI] Skipping depth 6: remaining=2.36s estimated=6.25s prev_depth=1.79s
+[AI] Pre-search: 0.01s, search budget: 4.99s
+[AI] Depth 1: (9,5) score=-143164 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (9,5) score=-156804 nodes=71 tt_hits=1 nmp=0 lmr_re=0 time=0.05s depth_time=0.04s
+[AI] Depth 3: (9,5) score=9999999 nodes=270 tt_hits=21 nmp=0 lmr_re=0 time=0.16s depth_time=0.11s
+[AI] Depth 4: (9,5) score=-154561 nodes=853 tt_hits=151 nmp=20 lmr_re=0 time=0.59s depth_time=0.42s
+[AI] Depth 5: (9,5) score=9999999 nodes=1601 tt_hits=479 nmp=43 lmr_re=1 time=1.07s depth_time=0.48s
+[AI] Depth 6: (9,5) score=-151498 nodes=5764 tt_hits=1554 nmp=228 lmr_re=8 time=4.21s depth_time=3.15s
+[AI] Pre-search: 0.01s, search budget: 4.99s
+[AI] Depth 1: (6,5) score=9999999 nodes=20 tt_hits=0 nmp=0 lmr_re=0 time=0.01s depth_time=0.01s
+[AI] Depth 2: (5,5) score=12008 nodes=84 tt_hits=8 nmp=0 lmr_re=0 time=0.06s depth_time=0.04s
+211.36.147.243 - - [18/Mar/2026 09:48:41] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:42] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:42] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:45] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:48] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:48] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:48:52] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:12] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:12] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:15] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:18] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:18] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:18] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:20] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:21] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:21] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:23] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:23] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:24] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:37] "POST /api/board/new HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:38] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:38] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:38] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:40] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:40] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:42] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:43] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:43] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:46] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:47] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:47] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:48] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:49] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:49] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:49] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:51] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:51] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:55] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:56] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:56] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:57] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:58] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:58] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:49:58] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:03] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:03] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:06] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:08] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:08] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:14] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:16] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:16] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:18] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:26] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:27] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:30] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:32] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:32] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:32] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:34] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:34] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:35] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:37] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:37] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:37] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:41] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:41] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:41] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:47] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:47] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:47] "POST /api/ai/move/sync HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:51] "POST /api/move HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:51] "POST /api/ai/move/stream HTTP/1.1" 200 -
+211.36.147.243 - - [18/Mar/2026 09:50:51] "POST /api/ai/move/sync HTTP/1.1" 200 -

@@ -97,11 +97,14 @@ def ai_move():
     # Deep copy the board for AI search (prevents cross-request corruption)
     ai_board = OmokBoard.from_dict(board.to_dict())
 
-    acquired = _ai_lock.acquire(timeout=35)
+    acquired = _ai_lock.acquire(timeout=60)
     if not acquired:
         return jsonify({'status': 'error', 'message': 'AI가 다른 게임을 처리 중입니다. 잠시 후 다시 시도해주세요.'})
     try:
+        import time
+        start_time = time.time()
         move = ai.generate_move(ai_board)
+        elapsed_time = time.time() - start_time
     finally:
         _ai_lock.release()
 
@@ -120,9 +123,9 @@ def ai_move():
     winner = board.check_winner()
     if winner:
         save_record(history, winner, difficulty)
-        return jsonify({'status': 'win', 'board': board.to_list(), 'winner': winner, 'ai_move': [ax, ay], 'moves': len(history)})
+        return jsonify({'status': 'win', 'board': board.to_list(), 'winner': winner, 'ai_move': [ax, ay], 'ai_time': elapsed_time, 'moves': len(history)})
 
-    return jsonify({'status': 'continue', 'board': board.to_list(), 'turn': board.current_turn, 'ai_move': [ax, ay], 'moves': len(history)})
+    return jsonify({'status': 'continue', 'board': board.to_list(), 'turn': board.current_turn, 'ai_move': [ax, ay], 'ai_time': elapsed_time, 'moves': len(history)})
 
 
 @app.route('/api/ai/move/stream', methods=['POST'])
@@ -140,7 +143,7 @@ def ai_move_stream():
     ai = get_ai(difficulty)
 
     event_queue = queue.Queue()
-    result_holder = [None]
+    result_holder = []
     ai_done = threading.Event()
 
     # CPU usage monitor for current process
@@ -166,15 +169,21 @@ def ai_move_stream():
         event_queue.put(('cpu', {'cpu': 0}))
 
     def run_ai():
-        acquired = _ai_lock.acquire(timeout=35)
+        acquired = _ai_lock.acquire(timeout=60)
         if not acquired:
             event_queue.put(('error', {'message': 'AI가 다른 게임을 처리 중입니다.'}))
             ai_done.set()
             event_queue.put(('_finished', None))
             return
         try:
+            import time
+            start_time = time.time()
             move = ai.generate_move_with_progress(ai_board, progress_cb=progress_cb)
-            result_holder[0] = move
+            elapsed_time = time.time() - start_time
+            if result_holder:
+                result_holder[0] = (move, elapsed_time)
+            else:
+                result_holder.append((move, elapsed_time))
         except Exception as e:
             event_queue.put(('error', {'message': str(e)}))
         finally:
@@ -198,7 +207,11 @@ def ai_move_stream():
                 break
 
             if evt_type == '_finished':
-                move = result_holder[0]
+                if not result_holder:
+                    yield f"event: result\ndata: {json.dumps({'status': 'error', 'message': 'AI 결과가 없습니다.'})}\n\n"
+                    break
+
+                move, elapsed_time = result_holder[0]
                 if move is None:
                     yield f"event: result\ndata: {json.dumps({'status': 'error', 'message': 'AI가 둘 자리가 없습니다.'})}\n\n"
                     break
@@ -211,11 +224,11 @@ def ai_move_stream():
                 if winner:
                     save_record(new_history, winner, difficulty)
                     result = {'status': 'win', 'board': board.to_list(), 'winner': winner,
-                              'ai_move': [ax, ay], 'moves': len(new_history),
+                              'ai_move': [ax, ay], 'ai_time': elapsed_time, 'moves': len(new_history),
                               'history': new_history}
                 else:
                     result = {'status': 'continue', 'board': board.to_list(), 'turn': board.current_turn,
-                              'ai_move': [ax, ay], 'moves': len(new_history),
+                              'ai_move': [ax, ay], 'ai_time': elapsed_time, 'moves': len(new_history),
                               'history': new_history}
 
                 yield f"event: result\ndata: {json.dumps(result)}\n\n"

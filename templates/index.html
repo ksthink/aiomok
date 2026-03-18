@@ -48,7 +48,23 @@
             <!-- 기보 목록 -->
             <section class="replay-select hidden" id="replaySelect">
                 <h2 class="section-title">기보복기</h2>
+                <div class="record-search">
+                    <button class="btn-date-pick" id="btnDatePick">
+                        <span id="datePickLabel">날짜 선택</span>
+                    </button>
+                    <button class="btn-search-clear hidden" id="btnSearchClear">✕</button>
+                </div>
+                <!-- 커스텀 달력 드롭다운 -->
+                <div class="cal-dropdown hidden" id="calDropdown">
+                    <div class="cal-header">
+                        <button class="cal-nav" id="calPrevMonth">‹</button>
+                        <span class="cal-title" id="calTitle"></span>
+                        <button class="cal-nav" id="calNextMonth">›</button>
+                    </div>
+                    <div class="cal-grid" id="calGrid"></div>
+                </div>
                 <div class="record-list" id="recordList"></div>
+                <div class="pagination" id="pagination"></div>
                 <button class="btn-back" id="backFromReplay">뒤로</button>
             </section>
 
@@ -107,6 +123,6 @@
         <div class="ai-thinking hidden" id="aiThinking">AI 생각 중...</div>
     </div>
 
-    <script src="/static/js/game.js?v=25"></script>
+    <script src="/static/js/game.js?v=27"></script>
 </body>
 </html>

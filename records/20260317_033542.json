@@ -1,0 +1,123 @@
+{
+  "id": "20260317_033542",
+  "timestamp": "2026-03-17 03:35",
+  "winner": "black",
+  "difficulty": 10,
+  "move_count": 19,
+  "moves": [
+    {
+      "color": "black",
+      "move": 1,
+      "x": 7,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 2,
+      "x": 8,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 3,
+      "x": 7,
+      "y": 6
+    },
+    {
+      "color": "white",
+      "move": 4,
+      "x": 7,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 5,
+      "x": 7,
+      "y": 9
+    },
+    {
+      "color": "white",
+      "move": 6,
+      "x": 10,
+      "y": 10
+    },
+    {
+      "color": "black",
+      "move": 7,
+      "x": 9,
+      "y": 9
+    },
+    {
+      "color": "white",
+      "move": 8,
+      "x": 10,
+      "y": 8
+    },
+    {
+      "color": "black",
+      "move": 9,
+      "x": 9,
+      "y": 8
+    },
+    {
+      "color": "white",
+      "move": 10,
+      "x": 10,
+      "y": 11
+    },
+    {
+      "color": "black",
+      "move": 11,
+      "x": 10,
+      "y": 9
+    },
+    {
+      "color": "white",
+      "move": 12,
+      "x": 8,
+      "y": 9
+    },
+    {
+      "color": "black",
+      "move": 13,
+      "x": 9,
+      "y": 10
+    },
+    {
+      "color": "white",
+      "move": 14,
+      "x": 9,
+      "y": 11
+    },
+    {
+      "color": "black",
+      "move": 15,
+      "x": 9,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 16,
+      "x": 9,
+      "y": 6
+    },
+    {
+      "color": "black",
+      "move": 17,
+      "x": 8,
+      "y": 7
+    },
+    {
+      "color": "white",
+      "move": 18,
+      "x": 6,
+      "y": 5
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "color": "black",
+      "move": 19
+    }
+  ]
+}

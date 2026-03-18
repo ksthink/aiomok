@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-import json
 import datetime
-import shutil
+import zoneinfo
+from supabase import create_client, Client
 
-RECORDS_DIR = os.path.join(os.path.dirname(__file__), '..', 'records')
+# Supabase 설정 (todo 프로젝트의 KEY 공유)
+SUPABASE_URL = "https://hkcbnibbguzbgqucnkzm.supabase.co"
+SUPABASE_KEY = "sb_publishable_Kx0gAQwUHagHrNyFZo7xjg_7Y72LCFn"
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def _sanitize_record_id(record_id):
     """Sanitize record_id to prevent path traversal."""
@@ -13,16 +17,12 @@ def _sanitize_record_id(record_id):
         return None
     return record_id
 
-def get_record_path(record_id):
-    os.makedirs(RECORDS_DIR, exist_ok=True)
-    return os.path.join(RECORDS_DIR, f"{record_id}.json")
-
 def save_record(history, winner, difficulty=0):
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(zoneinfo.ZoneInfo('Asia/Seoul'))
     timestamp = now.strftime('%Y-%m-%d %H:%M')
     record_id = now.strftime('%Y%m%d_%H%M%S')
     
-    record = {
+    data = {
         'id': record_id,
         'timestamp': timestamp,
         'winner': winner,
@@ -31,48 +31,34 @@ def save_record(history, winner, difficulty=0):
         'moves': history
     }
     
-    path = get_record_path(record_id)
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(record, f, ensure_ascii=False, indent=2)
-    
+    try:
+        supabase.table("records").insert(data).execute()
+    except Exception as e:
+        print(f"[RECORD] Supabase 저장 실패: {e}")
+        
     return record_id
 
 def list_records():
-    if not os.path.exists(RECORDS_DIR):
+    try:
+        # 내림차순 정렬 (최신 기보가 위로)
+        res = supabase.table("records").select("id, timestamp, winner, difficulty, move_count").order("timestamp", desc=True).execute()
+        return res.data
+    except Exception as e:
+        print(f"[RECORD] Supabase 목록 로드 실패: {e}")
         return []
-    
-    records = []
-    for filename in sorted(os.listdir(RECORDS_DIR), reverse=True):
-        if filename.endswith('.json'):
-            try:
-                path = os.path.join(RECORDS_DIR, filename)
-                with open(path, 'r', encoding='utf-8') as f:
-                    record = json.load(f)
-                    moves = record.get('moves', [])
-                    records.append({
-                        'id': record.get('id', filename[:-5]),
-                        'timestamp': record.get('timestamp', ''),
-                        'winner': record.get('winner', ''),
-                        'difficulty': record.get('difficulty', 0),
-                        'move_count': record.get('move_count', len(moves))
-                    })
-            except Exception as e:
-                print(f"[RECORD] 기보 파일 읽기 실패: {filename} - {e}")
-    
-    return records
 
 def get_record(record_id):
     record_id = _sanitize_record_id(record_id)
     if not record_id:
         return None
-    path = get_record_path(record_id)
-    if not os.path.exists(path):
-        return None
 
     try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError):
+        res = supabase.table("records").select("*").eq("id", record_id).execute()
+        if res.data and len(res.data) > 0:
+            return res.data[0]
+        return None
+    except Exception as e:
+        print(f"[RECORD] Supabase 개별 기보 로드 실패: {e}")
         return None
 
 def get_stats():
@@ -92,7 +78,9 @@ def get_stats():
     }
 
 def clear_records():
-    """모든 기보 삭제"""
-    if os.path.exists(RECORDS_DIR):
-        shutil.rmtree(RECORDS_DIR)
-    os.makedirs(RECORDS_DIR, exist_ok=True)
+    """모든 기보 삭제 (단, 조건 없이 전체 삭제를 해야하므로 주의)"""
+    try:
+        # Supabase에서는 빈 필터 없이 삭제 불가, 조건을 주어서 전체를 삭제 (id != '')
+        supabase.table("records").delete().neq("id", "impossible_id_to_delete_all").execute()
+    except Exception as e:
+        print(f"[RECORD] Supabase 전체 기보 삭제 실패: {e}")
