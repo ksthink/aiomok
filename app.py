@@ -5,13 +5,22 @@ import json
 import queue
 import threading
 import psutil
+from dotenv import load_dotenv
 from game.omok import OmokBoard
 from game.ai import GomokuAI
 from game.rules import get_forbidden_type
 from game.record import save_record, list_records, get_record, get_stats, clear_records
 
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'lord-gomoku-secret-key-2024')
+_secret_key = os.environ.get('SECRET_KEY')
+if not _secret_key:
+    raise RuntimeError(
+        "SECRET_KEY environment variable is not set. "
+        "Copy .env.example to .env and set a strong random value."
+    )
+app.secret_key = _secret_key
 
 MAX_DIFFICULTY = 10
 

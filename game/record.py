@@ -3,11 +3,20 @@ import os
 import re
 import datetime
 import zoneinfo
+from dotenv import load_dotenv
 from supabase import create_client, Client
 
-# Supabase 설정 (todo 프로젝트의 KEY 공유)
-SUPABASE_URL = "https://hkcbnibbguzbgqucnkzm.supabase.co"
-SUPABASE_KEY = "sb_publishable_Kx0gAQwUHagHrNyFZo7xjg_7Y72LCFn"
+load_dotenv()
+
+# Supabase 설정 — .env 파일 또는 환경변수에서 읽음
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError(
+        "SUPABASE_URL and SUPABASE_KEY must be set in environment variables. "
+        "Copy .env.example to .env and fill in the values."
+    )
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 

@@ -1,8 +1,11 @@
 import os
 import requests
 
-SUPABASE_URL = "https://hkcbnibbguzbgqucnkzm.supabase.co"
-SUPABASE_KEY = "sb_publishable_Kx0gAQwUHagHrNyFZo7xjg_7Y72LCFn"
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError("SUPABASE_URL and SUPABASE_KEY must be set in environment variables.")
 
 headers = {
     "apikey": SUPABASE_KEY,

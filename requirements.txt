@@ -3,3 +3,5 @@ torch==2.2.0
 numpy==1.26.3
 Werkzeug==3.0.1
 psutil>=5.9.0
+python-dotenv>=1.0.0
+supabase>=2.0.0
