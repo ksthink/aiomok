@@ -3,6 +3,46 @@
 15×15 오목(Gomoku) 웹 게임. 사람(흑) vs AI(백), 최고 난이도 고정.
 AI의 사고 과정을 고스트 스톤으로 시각화하는 것이 핵심 특징이다.
 
+## 업데이트 내역
+
+### AI 엔진 최적화 (game/ai.py)
+
+이번 업데이트에서 Alpha-Beta 탐색 엔진에 17가지 최적화를 적용했다.
+7초 제한 시간 내에 더 깊은 탐색이 가능해졌다.
+
+**탐색 효율 개선:**
+
+| 최적화 | 설명 |
+|---|---|
+| **Transposition Table 영구 보존** | TT를 `GomokuAI` 인스턴스에 저장하여 매 수마다 재사용. 이전 수에서 탐색한 결과를 다음 수에 활용 |
+| **History Heuristic 영구 보존 + 노화** | 히스토리 테이블을 수 간 유지하되, 매 수마다 값을 절반(`>>= 1`)으로 감쇄하여 오래된 정보 자동 퇴화 |
+| **Graduated Aspiration Windows** | 이전 깊이 점수 ±50에서 시작, fail 시 delta를 4배씩 확장하는 점진적 창 확장. 불필요한 전폭 재탐색 최소화 |
+| **Adaptive NMP** | Null-Move Pruning 감소량을 깊이에 따라 가변 적용 (depth ≤ 6: R=2, depth > 6: R=3) |
+| **Razoring** | depth 1~3 비PV 노드에서 정적 평가 + 여유값이 alpha 이하면 즉시 반환 (margin: depth × 300) |
+| **Futility Pruning** | depth 1~2 비PV 노드에서 전술적으로 중요하지 않은 후기 수를 가지치기 |
+| **Threat Extension** | 수 후 4연속이 생기거나 상대 4를 차단하는 경우 탐색 깊이 1 연장 |
+| **IID (Internal Iterative Deepening)** | PV 노드에서 TT 최선 수가 없고 depth ≥ 5일 때, depth-2 탐색으로 TT를 채운 뒤 본 탐색 진행 |
+| **PV 노드 폭 차별화** | PV 노드는 최대 15수, 비PV 노드는 최대 10수로 후보 수 제한을 달리 적용 |
+| **LMR 정밀화** | PV 노드에서 감소량 1 완화, 확장이 적용된 수는 LMR 비적용 |
+
+**평가 함수 개선:**
+
+| 최적화 | 설명 |
+|---|---|
+| **증분 평가 재설계** | 셀별 점수 캐시(`_cell_score[y][x]`)를 유지. 착수/취소 시 영향받는 셀(4방향 반경 4)만 재계산하여 전체 보드 스캔 제거 |
+| **수 정렬 통합** | `_score_cands_fast()`의 전술 점수를 `_order_moves()`에 전달하여 TT/killer/history와 통합 정렬 |
+| **Quiescence 최적화** | 보드 수정(임시 착수) 없이 방향 카운팅만으로 5목 위협 감지. board mutation 비용 제거 |
+| **`_count_dir()` 인라이닝** | `_score_cands_fast()` 내부의 함수 호출을 while 루프로 직접 전개하여 호출 오버헤드 제거 |
+
+**코드 정리:**
+
+- `_evaluate_np()` 제거 — NumPy 기반 평가 함수(호출되지 않는 사문화된 코드) 삭제
+- `import numpy as np` 제거 — 더 이상 사용하지 않는 의존성 제거
+
+### UI 변경 (templates/index.html, static/js/game.js)
+
+- 프로세스 점유율 표시 옆의 소요시간(초) 라벨 제거
+
 ## 실행
 
 ```bash
